@@ -28,7 +28,7 @@ class CalendarioNoLaborable < ActiveRecord::Base
       aux = false
       cant_mes = Time.days_in_month(mes.to_i, anio.to_i)
     end
-    if hoy
+    if aux
       dias = CalendarioNoLaborable.where('extract(year from fecha) = ? AND extract(month from fecha ) = ? AND extract(day from fecha )<= ? AND mall_id = ?', anio,mes,hoy.to_i, mall).count
     else
       dias = CalendarioNoLaborable.where('extract(year from fecha) = ? AND extract(month from fecha ) = ? AND mall_id = ?', anio,mes,mall).count

@@ -1,0 +1,1 @@
+json.extract! @contrato_servicio, :id, :nro_contrato, :fecha_inicio, :fecha_fin, :archivo_contrato, :monto_ml, :moonto_usd, :porcIngresosAlquiler, :estado_contrato, :locatarios, :contrato_ml, :created_at, :updated_at

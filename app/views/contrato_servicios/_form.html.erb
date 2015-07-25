@@ -1,0 +1,57 @@
+<%= form_for(@contrato_servicio) do |f| %>
+  <% if @contrato_servicio.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@contrato_servicio.errors.count, "error") %> prohibited this contrato_servicio from being saved:</h2>
+
+      <ul>
+      <% @contrato_servicio.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :nro_contrato %><br>
+    <%= f.text_field :nro_contrato %>
+  </div>
+  <div class="field">
+    <%= f.label :fecha_inicio %><br>
+    <%= f.date_select :fecha_inicio %>
+  </div>
+  <div class="field">
+    <%= f.label :fecha_fin %><br>
+    <%= f.date_select :fecha_fin %>
+  </div>
+  <div class="field">
+    <%= f.label :archivo_contrato %><br>
+    <%= f.text_field :archivo_contrato %>
+  </div>
+  <div class="field">
+    <%= f.label :monto_ml %><br>
+    <%= f.text_field :monto_ml %>
+  </div>
+  <div class="field">
+    <%= f.label :moonto_usd %><br>
+    <%= f.text_field :moonto_usd %>
+  </div>
+  <div class="field">
+    <%= f.label :porcIngresosAlquiler %><br>
+    <%= f.text_field :porcIngresosAlquiler %>
+  </div>
+  <div class="field">
+    <%= f.label :estado_contrato %><br>
+    <%= f.check_box :estado_contrato %>
+  </div>
+  <div class="field">
+    <%= f.label :locatarios %><br>
+    <%= f.number_field :locatarios %>
+  </div>
+  <div class="field">
+    <%= f.label :contrato_ml %><br>
+    <%= f.check_box :contrato_ml %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

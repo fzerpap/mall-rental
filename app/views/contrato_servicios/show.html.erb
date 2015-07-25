@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Nro contrato:</strong>
+  <%= @contrato_servicio.nro_contrato %>
+</p>
+
+<p>
+  <strong>Fecha inicio:</strong>
+  <%= @contrato_servicio.fecha_inicio %>
+</p>
+
+<p>
+  <strong>Fecha fin:</strong>
+  <%= @contrato_servicio.fecha_fin %>
+</p>
+
+<p>
+  <strong>Archivo contrato:</strong>
+  <%= @contrato_servicio.archivo_contrato %>
+</p>
+
+<p>
+  <strong>Monto ml:</strong>
+  <%= @contrato_servicio.monto_ml %>
+</p>
+
+<p>
+  <strong>Moonto usd:</strong>
+  <%= @contrato_servicio.moonto_usd %>
+</p>
+
+<p>
+  <strong>Porcingresosalquiler:</strong>
+  <%= @contrato_servicio.porcIngresosAlquiler %>
+</p>
+
+<p>
+  <strong>Estado contrato:</strong>
+  <%= @contrato_servicio.estado_contrato %>
+</p>
+
+<p>
+  <strong>Locatarios:</strong>
+  <%= @contrato_servicio.locatarios %>
+</p>
+
+<p>
+  <strong>Contrato ml:</strong>
+  <%= @contrato_servicio.contrato_ml %>
+</p>
+
+<%= link_to 'Edit', edit_contrato_servicio_path(@contrato_servicio) %> |
+<%= link_to 'Back', contrato_servicios_path %>

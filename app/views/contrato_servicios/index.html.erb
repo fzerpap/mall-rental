@@ -1,0 +1,43 @@
+<h1>Listing contrato_servicios</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nro contrato</th>
+      <th>Fecha inicio</th>
+      <th>Fecha fin</th>
+      <th>Archivo contrato</th>
+      <th>Monto ml</th>
+      <th>Moonto usd</th>
+      <th>Porcingresosalquiler</th>
+      <th>Estado contrato</th>
+      <th>Locatarios</th>
+      <th>Contrato ml</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contrato_servicios.each do |contrato_servicio| %>
+      <tr>
+        <td><%= contrato_servicio.nro_contrato %></td>
+        <td><%= contrato_servicio.fecha_inicio %></td>
+        <td><%= contrato_servicio.fecha_fin %></td>
+        <td><%= contrato_servicio.archivo_contrato %></td>
+        <td><%= contrato_servicio.monto_ml %></td>
+        <td><%= contrato_servicio.moonto_usd %></td>
+        <td><%= contrato_servicio.porcIngresosAlquiler %></td>
+        <td><%= contrato_servicio.estado_contrato %></td>
+        <td><%= contrato_servicio.locatarios %></td>
+        <td><%= contrato_servicio.contrato_ml %></td>
+        <td><%= link_to 'Show', contrato_servicio %></td>
+        <td><%= link_to 'Edit', edit_contrato_servicio_path(contrato_servicio) %></td>
+        <td><%= link_to 'Destroy', contrato_servicio, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contrato servicio', new_contrato_servicio_path %>
