@@ -1,0 +1,100 @@
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-lg-10
+    %h2
+      Contrato de Servicios de Software
+    %ol.breadcrumb
+      %li
+        = link_to 'Inicio', root_url
+      %li
+        = link_to 'Malls', malls_path
+
+.wrapper.wrapper-content
+  .row.animated.fadeInRight
+    .col-md-12
+      .ibox.float-e-margins
+        .ibox-content
+          %h3
+            Edicion de un Contrato de Servicio
+        = form_for @contrato_servicio, html: {class: 'form-horizontal m-t-md', id: 'contrato_alquiler_form'} do |f|
+          = render 'shared/error_messages', object: f.object, model: 'Contrato Servicio'
+          .row
+            .col-lg-8.col-sm-offset-2
+              .ibox.float-e-margins
+                .ibox-content.form-horizontal
+                  .form-group
+                    = f.label :cliente_id, "Cliente: ", class: 'col-sm-2 control-label'
+                    .col-sm-10
+                      = f.collection_select(:cliente_id, Cliente.all, :id, :nombre,  {include_blank: 'Seleccione el cliente'}, class: 'form-control')
+          .ibox.float-e-margins
+            .ibox-content.form-horizontal
+              .row
+                .col-lg-6
+                  .form-group
+                    = f.label :nro_contrato, class: 'col-sm-4 control-label' do
+                      Nro. del Contrato:
+                    .col-sm-8
+                      = f.text_field :nro_contrato, class: 'form-control'
+                  .form-group
+                    = f.label :tipo_servicio_id, "Servicio: ", class: 'col-sm-4 control-label'
+                    .col-sm-8
+                      = select :tipo_servicio_id, :tipo_servicio_id, options_from_collection_for_select(TipoServicio.all, :id, :tipo, selected: f.object.cliente.tipo_servicio_id || nil), {include_blank: 'Seleccione el Tipo de Servicio'}, class: 'form-control'
+                  .form-group
+                    = f.label :tipo_contrato_servicio, "Tipo Contrato: ", class: 'col-sm-4 control-label'
+                    .col-sm-8
+                      = f.select :tipo_contrato_servicio_id, options_from_collection_for_select(TipoContratoServicio.all, :id, :tipo_contrato, selected: f.object.tipo_contrato_servicio_id || nil), {include_blank: 'Seleccione el Tipo de Contrato de Servicio'}, {class: 'form-control tipo_contrato_servicio_required', id: 'select_tipo_contrato_servicio'}
+                  .form-group
+                    = f.label :fecha_inicio, class: 'col-sm-4 control-label' do
+                      Fecha Inicio del Contrato:
+                    .col-sm-8.form-inline
+                      = f.date_select :fecha_inicio,{}, class: 'form-control'
+                  .form-group
+                    = f.label :fecha_fin, class: 'col-sm-4 control-label' do
+                      Fecha Fin del Contrato:
+                    .col-sm-8.form-inline
+                      = f.date_select :fecha_fin,{}, class: 'form-control'
+                .col-lg-6
+                  %div#precio_servicio{style: (f.object.tipo_contrato_servicio.tipo == 'servicio_x_locatario' || f.object.tipo_contrato_servicio.tipo == 'venta_del_software') ? '' : 'display:none'}
+                    .form-group
+                      = f.label :precio_servicio_id, class: 'col-sm-6 control-label' do
+                        Precio (USD):
+                      .col-sm-6
+                        = f.text_field :precio_servicio_id, class: 'form-control'
+                  .form-group
+                    = f.label :locatarios, class: 'col-sm-6 control-label' do
+                      Locatarios (cantidad):
+                    .col-sm-6
+                      = f.text_field :locatarios, class: 'form-control'
+                  %div#datos_monto{style: (f.object.tipo_contrato_servicio.tipo == 'servicio_x_locatario' || f.object.tipo_contrato_servicio.tipo == 'venta_del_software') ? '' : 'display:none'}
+                    .form-group
+                      = f.label :monto_usd, class: 'col-sm-6 control-label' do
+                        Monto en USD:
+                      .col-sm-6
+                        = f.text_field :monto_usd, class: 'form-control'
+                    .form-group
+                      = f.label :monto_ml, class: 'col-sm-6 control-label' do
+                        Cambio Bs/USD:
+                      .col-sm-6
+                        = f.text_field :monto_ml, class: 'form-control'
+                    .form-group
+                      = f.label :monto_usd, class: 'col-sm-6 control-label' do
+                        Monto en USD:
+                      .col-sm-6
+                        = f.text_field :monto_usd, class: 'form-control'
+                  %div#porc_ingresos{style: (f.object.tipo_contrato_servicio.tipo == 'servicio_x_porc_ingresos_mensuales') ? '' : 'display:none'}
+                    .form-group
+                      = f.label :porc_ingresos_alquiler, class: 'col-sm-6 control-label' do
+                        \% por Ingresos de Alquiler:
+                      .col-sm-6
+                        = f.text_field :porc_ingresos_alquiler, class: 'form-control'
+                  .form-group
+                    = f.label :contrato_ml, class: 'col-sm-6 control-label' do
+                      El contrato es en Moneda Local:
+                    .col-sm-6
+                      = f.check_box :contrato_ml
+                .row
+                  .col-lg-12
+                    .form-group
+                      .col-sm-3.col-sm-offset-2
+                        = link_to 'Atras', contrato_servicios_path, class: 'btn btn-warning btn-block'
+                      .col-sm-3.col-sm-offset-1
+                        = f.submit 'Actualizar Contrato de Servicios', class: 'btn btn-mall btn-block'

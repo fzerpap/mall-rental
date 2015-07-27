@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703082842) do
+ActiveRecord::Schema.define(version: 20150726013644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -140,6 +140,28 @@ ActiveRecord::Schema.define(version: 20150703082842) do
 
   add_index "contrato_alquilers", ["tienda_id"], name: "index_contrato_alquilers_on_tienda_id", using: :btree
 
+  create_table "contrato_servicios", force: true do |t|
+    t.string   "nro_contrato"
+    t.date     "fecha_inicio"
+    t.date     "fecha_fin"
+    t.string   "archivo_contrato"
+    t.float    "monto_ml"
+    t.float    "monto_usd"
+    t.float    "porc_ingresos_alquiler",    default: 0.0
+    t.boolean  "estado_contrato",           default: true
+    t.integer  "locatarios",                default: 0
+    t.boolean  "contrato_ml",               default: true
+    t.integer  "precio_servicio_id"
+    t.integer  "tipo_contrato_servicio_id"
+    t.integer  "cliente_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "contrato_servicios", ["cliente_id"], name: "index_contrato_servicios_on_cliente_id", using: :btree
+  add_index "contrato_servicios", ["precio_servicio_id"], name: "index_contrato_servicios_on_precio_servicio_id", using: :btree
+  add_index "contrato_servicios", ["tipo_contrato_servicio_id"], name: "index_contrato_servicios_on_tipo_contrato_servicio_id", using: :btree
+
   create_table "cuenta_bancaria", force: true do |t|
     t.string   "nro_cta"
     t.string   "tipo_cuenta"
@@ -175,6 +197,12 @@ ActiveRecord::Schema.define(version: 20150703082842) do
 
   add_index "documento_ventas", ["venta_mensual_id"], name: "index_documento_ventas_on_venta_mensual_id", using: :btree
 
+  create_table "estado_facturas", force: true do |t|
+    t.string   "estado"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "factura_alquilers", force: true do |t|
     t.date     "fecha"
     t.string   "nro_factura"
@@ -185,9 +213,11 @@ ActiveRecord::Schema.define(version: 20150703082842) do
     t.integer  "cobranza_alquiler_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "estado_factura_id"
   end
 
   add_index "factura_alquilers", ["cobranza_alquiler_id"], name: "index_factura_alquilers_on_cobranza_alquiler_id", using: :btree
+  add_index "factura_alquilers", ["estado_factura_id"], name: "index_factura_alquilers_on_estado_factura_id", using: :btree
 
   create_table "idiomas", force: true do |t|
     t.string   "nombre"
@@ -284,7 +314,7 @@ ActiveRecord::Schema.define(version: 20150703082842) do
     t.integer  "tipo_pago"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cuenta_bancaria_id"
+    t.integer  "cuenta_bancarium_id"
     t.decimal  "monto"
     t.decimal  "monto_usd"
     t.boolean  "conciliado",              default: true
@@ -448,7 +478,7 @@ ActiveRecord::Schema.define(version: 20150703082842) do
 
   add_index "venta_diaria", ["venta_mensual_id"], name: "index_venta_diaria_on_venta_mensual_id", using: :btree
 
-  create_table "venta_mensual", force: true do |t|
+  create_table "venta_mensuals", force: true do |t|
     t.integer  "anio"
     t.integer  "mes"
     t.float    "monto"

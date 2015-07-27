@@ -27,7 +27,7 @@ class CuentaBancariaController < ApplicationController
 
     respond_to do |format|
       if @cuenta_bancarium.save
-        format.html { redirect_to cuenta_bancaria_path, notice: 'Cuenta Bancaria guardada existosamente.' }
+        format.html { redirect_to cuenta_bancaria_path, notice: 'Cuenta Bancaria guardada exitosamente.' }
         format.json { render :index, status: :created, location: @cuenta_bancarium }
       else
         format.html { render :new }
@@ -40,7 +40,7 @@ class CuentaBancariaController < ApplicationController
   def update
     respond_to do |format|
       if @cuenta_bancarium.update(cuenta_bancarium_params)
-        format.html { redirect_to cuenta_bancaria_path, notice: 'Cuenta Bancaria guardada existosamente.' }
+        format.html { redirect_to cuenta_bancaria_path, notice: 'Cuenta Bancaria guardada exitosamente.' }
         format.json { render :index, status: :ok, location: @cuenta_bancarium }
       else
         format.html { render :edit }

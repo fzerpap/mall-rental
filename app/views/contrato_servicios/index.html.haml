@@ -1,0 +1,65 @@
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-lg-10
+    %h2
+      Contratos de Servicios
+    %ol.breadcrumb
+      %li
+        = link_to 'Inicio', root_url
+      %li
+        Contratos de Servicio
+
+.wrapper.wrapper-content.animated.fadeInRight
+  .row
+    .col-lg-12
+      .ibox.float-e-margins
+        .ibox-content
+          .row
+            .col-sm-3
+              = link_to 'Nuevo Contrato de Servicio', new_contrato_servicio_path, class: 'btn btn-mall btn-block'
+          %br
+          .row
+            .col-md-12
+              .table-responsive
+                %table.table.table-striped.table-bordered.table-hover#table_contrato_servicio_index
+                  %thead
+                    %tr
+                      %th Cliente
+                      %th Nro Contrato
+                      %th Servicio
+                      %th Tipo Contrato
+                      %th Precio USD
+                      %th Locatarios
+                      %th Fecha Inicio
+                      %th Fecha Fin
+                      %th Monto ML
+                      %th Monto USD
+                      %th
+                        \% Ingresos Alquiler
+                      %th Estado
+                      %th Acciones
+                  %tbody
+                    - @contrato_servicios.each do |contrato|
+                      %tr
+                        %td= contrato.cliente.nombre
+                        %td= contrato.nro_contrato
+                        %td= contrato.cliente.tipo_servicio.tipo_humanize
+                        %td= !contrato.tipo_contrato_servicio.nil? ? contrato.tipo_contrato_servicio.tipo_contrato : ''
+                        %td= ! contrato.precio_servicio.nil? ?  contrato.precio_servicio.precio_usd : ''
+                        %td= contrato.locatarios
+                        %td= ContratoServicio.format_fecha(contrato.fecha_inicio)
+                        %td= contrato.fecha_fin.strftime("%d/%m/%Y")
+                        %td= ContratoServicio.format_number(contrato.monto_ml)
+                        %td= ContratoServicio.format_number(contrato.monto_usd)
+                        %td= contrato.porc_ingresos_alquiler
+                        %td= ContratoServicio.estado_title(contrato.estado_contrato)
+                        %td
+                          = link_to contrato do
+                            %i.fa.fa-search
+                          &nbsp;
+                          &nbsp;
+                          = link_to edit_contrato_servicio_path(contrato) do
+                            %i.fa.fa-edit
+                          &nbsp;
+                          &nbsp;
+                          = link_to contrato_servicio_path(contrato), method: :delete, data: { confirm: '¿Esta seguro de eliminar el contrato?' }  do
+                            %i.fa.fa-trash

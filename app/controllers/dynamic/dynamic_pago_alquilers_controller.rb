@@ -51,15 +51,6 @@ module Dynamic
           end
         end
 
-=begin
-        @ventas = VentaMensual.where('anio = ? AND mes = ? AND tienda_id = ?', @year,@month,@tienda_id)
-        @ventas.each do |venta|
-          if !venta.editable
-            @result = true
-          end
-        end
-=end
-
         ventas_tiendas.push(result)
       end
       render json: [result: result, tiendas: tiendas, ventas_tiendas: ventas_tiendas]

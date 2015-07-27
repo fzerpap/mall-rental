@@ -3,7 +3,7 @@ class FacturaAlquiler < ActiveRecord::Base
   has_many :pago_alquilers, through: :detalle_pago_alquilers
   belongs_to :cobranza_alquiler
 
-  enum estado_factura: [:Por_Cobrar, :Cobrada, :Nula]
+  has_one :estado_factura
 
   def self.get_facturas_xcobrar_tienda(tienda)
     return self.where("estado_factura_id = ?", 'Por_Cobrar')

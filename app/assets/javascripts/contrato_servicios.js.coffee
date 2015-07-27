@@ -1,3 +1,15 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
+#= require bootstrapValidator/bootstrapValidator
+#= require jasny/jasny-bootstrap
+#= require numeric
+
+jQuery(document).ready ->
+
+  $('#select_tipo_contrato_servicio').change ->
+    if ($(this).val() == '1' || $(this).val() == '2')
+      $('#precio_servicio').show()
+      $('#datos_monto').show()
+      $('#porc_ingresos').hide()
+    else
+      $('#precio_servicio').hide()
+      $('#datos_monto').hide()
+      $('#porc_ingresos').show()

@@ -1,0 +1,83 @@
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-lg-10
+    %h2
+      Contrato de Servicio
+    %ol.breadcrumb
+      %li
+        = link_to 'Inicio', root_url
+      %li
+        = link_to 'Contratos de Servicios', contrato_servicios_path
+      %li
+        Contrato de Servicio
+
+.wrapper.wrapper-content.animated.fadeInRight
+  .row
+    .col-lg-12
+      .ibox.float-e-margins
+        .ibox-content
+          .row
+            .col-md-4
+              %h2
+                = @contrato.cliente.nombre
+            .col-md-6
+              %p
+                %b RIF:
+                = @contrato.cliente.RIF
+              %p
+                %b Dirección:
+                = @contrato.cliente.direccion
+              %p
+                %b Teléfonos:
+                = @contrato.cliente.telefono
+
+          %hr
+          .row
+            .col-md-6
+              %h3
+                Nro Contrato-
+                = @contrato.nro_contrato
+              %p
+                %b Fecha de Inicio:
+                = ContratoServicio.format_fecha(@contrato.fecha_inicio)
+              %p
+                %b Fecha Fin:
+                =  ContratoServicio.format_fecha(@contrato.fecha_fin)
+              %p
+                %b Monto
+                = @contrato.monto_ml
+              %p
+                %b Monto USD
+                = @contrato.monto_usd
+            -#.col-md-6
+            -#  %h2
+            -#    Persona de Contacto -
+            -#    = @cliente.nombre_contacto
+            -#  %p
+            -#    %b Cédula:
+            -#    = @cliente.cedula_contacto
+  -#            %p
+  -#              %b Email:
+  -#              = @cliente.email_contacto
+  -#            %p
+  -#              %b Teléfonos
+  -#              = @cliente.telefono_contacto
+  -#            %p
+  -#              %b Profesion
+  -#              = @cliente.profesion_contacto
+  -#        %br
+  -#-#.row
+  -#-#  .col-md-12
+  -#-#    %p
+  -#-#      %b Inscripción en el Registro Mercantil:
+  -#-#      = @arrendatario.registro_mercantil
+  -#
+  .row
+    .col-lg-12
+      .ibox-content
+        .row
+          .col-sm-3
+            = link_to contrato_servicios_path, class: 'btn btn-warning btn-block' do
+              Regresar
+          .col-sm-3.col-sm-offset-6
+            = link_to edit_contrato_servicio_path(@contrato), class: 'btn btn-mall btn-block' do
+              Editar
