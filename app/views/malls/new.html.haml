@@ -21,6 +21,7 @@
         .ibox-content
           = form_for(@mall, url: {action: :create}, html: {class:"form-horizontal m-t-md", id: "form_registro_mall"}) do |f|
             = devise_error_messages!
+            = render 'shared/error_messages', object: f.object, model: 'Mall'
             .form-group
               = f.label :nombre, "Nombre: ", class: 'col-sm-2 control-label'
               .col-sm-10

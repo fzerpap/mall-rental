@@ -35,13 +35,15 @@
                       %td= role.tipo_servicio.tipo_humanize
                       %td
                         = link_to role do
-                          Ver
                           %i.fa.fa-search
-                        .verticalLine
+                          Ver
+                        &nbsp;
+                        &nbsp;
                         = link_to edit_role_path(role) do
+                          %i.fa.fa-pencil
                           Editar
-                          %i.fa.fa-edit
-                        .verticalLine
-                        = link_to role, method: :delete, data: { confirm: 'Are you sure?' } do
-                          Eliminar
+                        &nbsp;
+                        &nbsp;
+                        = link_to role, method: :delete, data: { confirm: "Seguro que desea eliminar el rol #{role.name}" } do
                           %i.fa.fa-trash
+                          Eliminar

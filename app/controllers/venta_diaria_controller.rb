@@ -26,12 +26,11 @@ class VentaDiariaController < ApplicationController
 
     @tienda = Tienda.find(tienda_id)
 
-    @contrato_alquiler = ContratoAlquiler.where(tienda: @tienda)
-    if @contrato_alquiler.last.tipo_canon_alquiler == 'fijo' || @contrato_alquiler.last.tipo_canon_alquiler == 'variableVB' || @contrato_alquiler.last.tipo_canon_alquiler == 'fijo_y_variable_venta_bruta'
-      @render = 'venta_bruta'
-    else
-      @render = 'venta_neta'
-    end
+    @contrato_alquiler = ContratoAlquiler.where(tienda_id: @tienda.id).last
+    tipo_canon_id = @contrato_alquiler.tipo_canon_alquiler_id
+
+    [1,2,4].include?(tipo_canon_id) ? @render = 'venta_bruta' : @render = 'venta_neta'
+
   end
 
   def mf_cobranza

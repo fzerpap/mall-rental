@@ -46,10 +46,14 @@ class TiendasController < ApplicationController
   end
 
   def destroy
-    @tienda.destroy
     respond_to do |format|
-      format.html { redirect_to tiendas_url }
-      format.json { head :no_content }
+      if @tienda.destroy
+        format.html { redirect_to tiendas_path, notice: 'Tienda eliminada satisfactoriamente'  }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to tiendas_path, alert: 'La tienda no puede ser eliminada, porque tiene contratos de alquiler asociados'  }
+        format.json { head :no_content }
+      end
     end
   end
 

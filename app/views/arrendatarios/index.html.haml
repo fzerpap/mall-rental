@@ -45,11 +45,8 @@
                           &nbsp;
                           &nbsp;
                           = link_to edit_arrendatario_path(arrendatario) do
-                            %i.fa.fa-edit
+                            %i.fa.fa-pencil
                           &nbsp;
                           &nbsp;
-                          = link_to arrendatario_path(arrendatario), method: :delete, data: { confirm: '¿Esta seguro de eliminar el arrendatario?' }  do
+                          = link_to arrendatario_path(arrendatario), method: :delete, data: { confirm: "¿Esta seguro de eliminar el arrendatario #{arrendatario.nombre}" }  do
                             %i.fa.fa-trash
-                        -#%td= arrendatario.tipo_canon_alquiler
-                        -#%td= arrendatario.fecha_inicio
-                        -#%td= arrendatario.fecha_fin

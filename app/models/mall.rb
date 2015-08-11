@@ -25,7 +25,7 @@ class Mall < ActiveRecord::Base
   has_many :locals, dependent: :destroy
   has_many :tipo_locals, through: :locals,dependent: :destroy
   has_many :arrendatarios, dependent: :destroy
-  has_many :tiendas, through: :arrendatarios, dependent: :destroy
+  has_many :tiendas, through: :locals, dependent: :destroy
   has_many :user_tiendas, through: :tiendas, dependent: :destroy
   has_many :contrato_alquilers, through: :tiendas, dependent: :destroy
   belongs_to :cuenta_bancarium
@@ -39,9 +39,16 @@ class Mall < ActiveRecord::Base
   has_many :clientes
 
 
-  validates :nombre, :abreviado, :rif, :direccion_fiscal, :telefono, :cuenta_bancarium, presence: true
+  validates :nombre, :abreviado, :rif, :direccion_fiscal, :telefono, presence: true
   validates :rif, uniqueness: true
 
+  before_destroy :confirm_presence_of_users
+
+  def confirm_presence_of_users
+    if users.any?
+      return false
+    end
+  end
 
   def self.malls_without_admin
     return Mall.where.not(id: Mall.joins(:users).merge(User.joins(:role).where(roles: {role_type: Role.role_types[:administrador_cliente]})))

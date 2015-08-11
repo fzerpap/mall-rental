@@ -23,21 +23,28 @@ class VentaMensual < ActiveRecord::Base
   has_many :venta_diariums
   has_many :documento_ventas
 
-  def self.get_venta_mes_tienda(tienda,year,month)
-    return VentaMensual.find_by('anio = ? AND mes = ? AND tienda_id = ?',year,month,tienda)
+  # Obtien las ventas de una tienda para un mes-año dado
+  def self.get_venta_mes_tienda(tienda_id,year,month)
+    where(tienda_id: tienda_id, anio: year, mes: month).first
   end
 
+  # Obtien las ventas de cada tienda para un mes-año dado
   def self.get_ventas_mes_xtienda(mall,year,month)
+    ids_tiendas = Tienda.get_ids_tiendas_mall(mall)
+    where(tienda_id: ids_tiendas, anio: year, mes: month).order(:tienda_id)
+  end
+
+  def self.get_ventas_mes_xtienda_BORRAR(mall,year,month)
     ventas_mes = Array.new
     mall.tiendas do |tienda|
-      venta_mes = VentaMensual.where('anio = ? AND mes = ? AND tienda_id = ?',year,month,tienda)
+      venta_mes = VentaMensual.where(anio: year, mes: month, tienda_id: tienda.id)
       ventas_mes.push(venta_mes)
     end
     return ventas_mes
   end
 
-  def self.suma_venta_mes(tienda,year,month)
-    venta_mensual = get_venta_mes_tienda(tienda,year,month)
+  def self.suma_venta_mes(tienda_id,year,month)
+    venta_mensual = get_venta_mes_tienda(tienda_id,year,month)
     if venta_mensual.nil?
       return 0
     else
@@ -100,7 +107,8 @@ class VentaMensual < ActiveRecord::Base
     end
   end
 
-  def self.get_ventas_xmes(mall,year)
+  # Obtien las ventas de un mall de cada mes para un año dado
+  def self.get_ventas_xmesBORRAR(mall,year)
     today = Time.now
     if today.strftime("%Y") == year
       mes_fin = today.strftime("%-m")
@@ -143,6 +151,11 @@ class VentaMensual < ActiveRecord::Base
 
     end
     return ventas
+  end
+
+  def self.get_ventas_xmes(mall,year)
+    ids_tiendas = mall.tiendas.pluck(:id)
+    select("mes,sum(monto_bruto) as monto_bruto").where(tienda_id: ids_tiendas, anio: year).group(:mes).order(:mes)
   end
 
 end

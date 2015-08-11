@@ -54,12 +54,17 @@ class PaisController < ApplicationController
   # DELETE /pais/1
   # DELETE /pais/1.json
   def destroy
-    @pai.destroy
     respond_to do |format|
-      format.html { redirect_to pais_url, notice: 'Pais se ha eliminado exitosamente.' }
-      format.json { head :no_content }
+      if @pai.destroy
+        format.html { redirect_to pais_path, notice: "País #{@pai.nombre} eliminado satisfactoriamente"  }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to pais_path, alert: "El País #{@pai.nombre} no puede ser eliminado, porque tiene malls asociados"  }
+        format.json { head :no_content }
+      end
     end
   end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

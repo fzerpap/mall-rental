@@ -57,12 +57,17 @@ class RolesController < ApplicationController
   # DELETE /roles/1
   # DELETE /roles/1.json
   def destroy
-    @role.destroy
     respond_to do |format|
-      format.html { redirect_to roles_url }
-      format.json { head :no_content }
+      if @role.destroy
+        format.html { redirect_to roles_path, notice: "Rol #{@role.name} eliminado satisfactoriamente"  }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to roles_path, alert: "El rol #{@role.name} no puede ser eliminado, porque tiene usuarios asociados"  }
+        format.json { head :no_content }
+      end
     end
   end
+
 
   def assign_role_mall
 

@@ -28,7 +28,7 @@
             %td= local.tipo_estado_local.humanize.capitalize
             %td
               = link_to edit_local_path(local) do
-                %i.fa.fa-edit
+                %i.fa.fa-pencil
                   &nbsp;
                   &nbsp;
               = link_to local, data: { confirm: "Seguro que desea eliminar el Local ?" }, method: :delete do

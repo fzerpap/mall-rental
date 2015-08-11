@@ -321,16 +321,16 @@ $(".actualizar_auditoria_ventas").on "change", ->
       month: $("#venta_diaria_select_month").val()
     before_send: $.blockUI({message: 'Por favor espere...'})
     success: (data) ->
-      value = data[0]['suma_total_ventas']
+      value = data[0]['total_ventas']
       $("#total_ventas_mes").text(value)
       value1 = data[0]['total_ventas_neta']
       $("#total_ventas_neta_mes").val(value)
       $("#total_ventas_neta_mes").number(value,2,',','.')
       value2 = data[0]['total_ventas_bruto']
       $("#total_ventas_mes_bruto").text(value2)
-      $("#monto_canon_fijo").text(data[0]['suma_canon_fijo'])
-      $("#monto_canon_x_venta").text(data[0]['suma_canon_variable'])
-      $("#total_canon").text(data[0]['suma_total_canon'])
+      $("#monto_canon_fijo").text(data[0]['total_canon_fijo'])
+      $("#monto_canon_x_venta").text(data[0]['total_canon_variable'])
+      $("#total_canon").text(data[0]['total_canon'])
 
       $("#tbody_auditoria_ventas").empty()
       $("#tbody_mall_ventas").empty()
@@ -346,8 +346,8 @@ $(".actualizar_auditoria_ventas").on "change", ->
         $("#tbody_auditoria_ventas").append("<tr><td>"+element.tienda+"</td><td>"+element.actividad_economica+"</td>" +
           "<td>"+element.local+"</td>" +
           "<td>"+element.tipo_canon+"</td><td class='clase_monto'>"+element.canon_fijo+"</td>" +
-          "<td class='clase_monto'>"+element.total_monto_ventas+"</td><td class='clase_monto'>"+element.canon_variable+"</td>" +
-          "<td class='clase_monto'>"+element.total_canon+"</td>" +
+          "<td class='clase_monto'>"+element.venta_mes+"</td><td class='clase_monto'>"+element.canon_variable+"</td>" +
+          "<td class='clase_monto'>"+element.canon_alquiler+"</td>" +
           "<td><input type='checkbox' disabled='disabled' name='ventas_actualizadas' value='"+element.tienda_id+"' "+@cadena_check+" /></td>" +
           "<td><input type='checkbox' name='recibo_cobro_"+element.tienda_id+"' disabled='disabled' "+@cadena_recibo+" /></td>" +
           "<td><a href='/ventas_tiendas/"+element.tienda_id+"/"+data[0]['mes']+"'>Ver Ventas diarias</a></td></tr>")
@@ -375,15 +375,15 @@ $(".actualizar_ventas_mes").on "change", ->
     success: (data) ->
       $("#tbody-ventas-mall").empty()
       meses = ['Enero', 'Febrero', 'Marzo', 'Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
-      mes_fin = data[0]['mes_fin']
+      cant_meses = data[0]['meses']
 
-      for num in [0..mes_fin]
-        $("#tbody-ventas-mall").append("<tr><th>"+ data[0]['ventas'][num].mes+"</th><td>"+data[0]['ventas'][num].suma_venta+"</td><td>"+data[0]['ventas'][num].canon_fijo+"</td><td>"+data[0]['ventas'][num].canon_variable+"</td><td>"+data[0]['ventas'][num].canon+"</td></tr>")
+      for num in [0..cant_meses-1]
+        $("#tbody-ventas-mall").append("<tr><th>"+ data[0]['ventas'][num].mes+"</th><td>"+data[0]['ventas'][num].monto_ventas+"</td><td>"+data[0]['ventas'][num].canon_fijo+"</td><td>"+data[0]['ventas'][num].canon_variable+"</td><td>"+data[0]['ventas'][num].canon_total+"</td></tr>")
 
-      $("#suma_total").text(data[0]['suma_total'])
+      $("#suma_total").text(data[0]['total_ventas'])
       $("#total_canon_fijo").text(data[0]['total_canon_fijo'])
-      $("#total_canon_x_ventas").text(data[0]['total_canon_x_ventas'])
-      $("#total_canons").text(data[0]['total_canons'])
+      $("#total_canon_x_ventas").text(data[0]['total_canon_variable'])
+      $("#total_canons").text(data[0]['total_canon'])
 
     error: (data)->
       $.unblockUI()
@@ -453,56 +453,68 @@ $("#btn-send-recibos").on "click", ->
       setTimeout($.unblockUI, 2000);
 
 $("#btn_cerrar_mes_venta").on "click", ->
-  if confirm('¿Está seguro de cerrar las ventas del mes?')
-    year = $("#date_lapso_year").val()
-    month = $("#venta_diaria_select_month").val()
-    tienda = $("#tienda_id").val()
+  now = new Date()
+  anio_hoy = now.getFullYear()
+  mes_hoy = now.getMonth()+1
 
-    $.ajax
-      type: "POST"
-      url: "/dynamic_venta_diaria/cerrar_ventas_mes"
-      dataType: "JSON"
-      async: false
-      data:
-        year: year
-        month: month
-        tienda: tienda
-      success: (data) ->
-        if data[0]['result'] == 1
-          mensaje = 'mensaje_cierre'
-        else
-          if data[0]['result'] == 2
-            mensaje = 'mensaje_ya_cerro'
+  year = $("#date_lapso_year option:selected").val()
+  month = $("#venta_diaria_select_month option:selected").val()
+  if ((String(year) == String(anio_hoy)) and (String(month) == String(mes_hoy)))
+    $.blockUI({
+      message: 'Esta opcion es valida solo para meses anteriores',
+    });
+    $('.blockOverlay').attr('title','Click para cerrar').click($.unblockUI);
+  else
+    if confirm('¿Está seguro de cerrar las ventas del mes?')
+      year = $("#date_lapso_year").val()
+      month = $("#venta_diaria_select_month").val()
+      tienda = $("#tienda_id").val()
+
+      $.ajax
+        type: "POST"
+        url: "/dynamic_venta_diaria/cerrar_ventas_mes"
+        dataType: "JSON"
+        async: false
+        data:
+          year: year
+          month: month
+          tienda: tienda
+        success: (data) ->
+          if data[0]['result'] == 1
+            mensaje = 'mensaje_cierre'
           else
-            mensaje = 'mensaje_no_puede_cerrar'
-        $.blockUI({
-          message: $('div.growlUI.'+mensaje),
-          fadeIn: 700,
-          fadeOut: 700,
-          timeout: 3000,
-          showOverlay: false,
-          centerY: false,
-          css: {
-            width: '350px',
-            top: '40px',
-            left: '',
-            right: '10px',
-            border: 'none',
-            padding: '5px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .6,
-            color: '#fff'
-          }
-        });
-        if data[0]['result'] == 1
-          run = () ->
-            $(".actualizar_ventas").change()
-          setTimeout(run, 3000)
-      error: (data)->
-        #$.unblockUI()
-        console.log(data)
-      complete: ->
-        a=1
+            if data[0]['result'] == 2
+              mensaje = 'mensaje_ya_cerro'
+            else
+              mensaje = 'mensaje_no_puede_cerrar'
+          $.blockUI({
+            message: $('div.growlUI.'+mensaje),
+            fadeIn: 700,
+            fadeOut: 700,
+            timeout: 3000,
+            showOverlay: false,
+            centerY: false,
+            css: {
+              width: '350px',
+              top: '40px',
+              left: '',
+              right: '10px',
+              border: 'none',
+              padding: '5px',
+              backgroundColor: '#000',
+              '-webkit-border-radius': '10px',
+              '-moz-border-radius': '10px',
+              opacity: .6,
+              color: '#fff'
+            }
+          });
+          if data[0]['result'] == 1
+            run = () ->
+              $(".actualizar_ventas").change()
+            setTimeout(run, 3000)
+        error: (data)->
+          #$.unblockUI()
+          console.log(data)
+        complete: ->
+          a=1
 

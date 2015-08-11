@@ -27,8 +27,16 @@ class Role < ActiveRecord::Base
 
   enum role_type: [:administrador_sistema, :administrador_cliente, :cliente_mall, :cliente_tienda]
 
+  before_destroy :confirm_presence_of_users
+
+   def confirm_presence_of_users
+    if users.any?
+      return false
+    end
+  end
+
   def self.all_valids
-    Role.where.not(role_type: Role.role_types[:administrador_sistema])
+    Role.where.not(role_type: Role.role_types[:administrador_sistema]).order(:name)
   end
 
   def self.administrador_sistemas

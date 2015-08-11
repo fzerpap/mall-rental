@@ -11,7 +11,7 @@ class Users::MallUsersController < ApplicationController
   end
 
   def new
-    @mall_user ||= User.new
+     @mall_user ||= User.new
   end
 
   def create
@@ -76,9 +76,11 @@ class Users::MallUsersController < ApplicationController
     end
 
     def set_roles
-      @roles = Role.where(role_type: Role.role_types[:cliente_mall])
-      if @roles.blank?
-        redirect_to new_role_path, alert: 'No existen roles para Clientes Mall.' and return
+
+      @roles = Role.joins(:malls).where(malls: {id: current_user.mall.id} ,role_type: Role.role_types[:cliente_mall])
+
+       if @roles.blank?
+        redirect_to new_role_path, alert: 'No existen roles para clientes mall.' and return
       end
     end
 end

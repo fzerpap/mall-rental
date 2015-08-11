@@ -29,25 +29,23 @@ class ContratoAlquiler < ActiveRecord::Base
   has_one :mall, through: :tienda
   belongs_to :tipo_canon_alquiler
 
-  #TODO Validaciones
   validates :archivo_contrato, presence: true
   validates :tipo_canon_alquiler_id, presence: true
 
   mount_uploader :archivo_contrato, FileUploader
 
-  # enum tipo_canon_alquiler: [:fijo, :variableVB, :variableVN, :fijo_y_variable_venta_bruta, :fijo_y_variable_venta_neta, :exonerado]
-
   def clean_canon_alquiler
-    if self.tipo_canon_alquiler.tipo == "fijo"
+    tipo_canon_id = self.tipo_canon_alquiler.id
+    if tipo_canon_id == 1 # "Fijo"
       self.canon_fijo_usd = self.canon_fijo_ml / CambioMoneda.last.cambio_ml_x_usd
       self.porc_canon_ventas = 0
       self.monto_minimo_ventas = 0
-    elsif self.tipo_canon_alquiler.tipo == "variable_venta_bruta" || self.tipo_canon_alquiler.tipo == "variable_venta_neta"
+    elsif tipo_canon_id == 2 || tipo_canon_id == 3 # Variable VB y VN
       self.canon_fijo_ml = 0
       self.canon_fijo_usd = 0
       self.monto_minimo_ventas = 0
       self.requerida_venta = true
-    elsif self.tipo_canon_alquiler.tipo == "fijo_y_variable_venta_bruta" ||  self.tipo_canon_alquiler.tipo == "fijo_y_variable_venta_neta"
+    elsif tipo_canon_id == 4 ||  tipo_canon_id == 5 # Fijo&Variable VB y VN
       self.canon_fijo_usd = self.canon_fijo_ml / CambioMoneda.last.cambio_ml_x_usd
       self.monto_minimo_ventas = self.canon_fijo_ml / (self.porc_canon_ventas / 100)
       self.requerida_venta = true
@@ -75,13 +73,6 @@ class ContratoAlquiler < ActiveRecord::Base
     self.fecha_fin.strftime("%d/%m/%Y")
   end
 
-=begin #Codigo como estaba el de Ricardo
-  def archivo_contrato_pdf?
-    return true if self.archivo_contrato.url.split('.').last == 'pdf'
-    return false
-  end
-=end
-
   def archivo_contrato_pdf? #cambios de Lery para hacer que funcione si no tiene archivo cargado.
     if self.archivo_contrato.url.nil?
       return false
@@ -92,15 +83,15 @@ class ContratoAlquiler < ActiveRecord::Base
   end
   #enum tipo_canon_alquiler: [:fijo, :variableVB, :variableVN, :fijo_y_variable_venta_bruta, :fijo_y_variable_venta_neta, :exonerado]
 
-  def self.calculate_canon(contrato,suma_monto_bruto,suma_monto_neto)
-    tipo_contrato = contrato.tipo_canon_alquiler.tipo
-    vmt = suma_monto_bruto if tipo_contrato == "variable_venta_bruta" || tipo_contrato == "fijo_y_variable_venta_bruta"
-    vmt = suma_monto_neto if tipo_contrato == "variable_venta_neta" || tipo_contrato == "fijo_y_variable_venta_neta"
+  def self.calculate_canonBorrar(contrato,monto_bruto,monto_neto)
+    tipo_canon = contrato.tipo_canon_alquiler.id
+    vmt = monto_bruto if tipo_canon == 2 || tipo_canon == 4
+    vmt = monto_neto  if tipo_canon == 3 || tipo_canon == 5
 
-    if tipo_contrato == 'fijo'
+    if tipo_canon == 1
       canon_fijo = contrato.canon_fijo_ml
       canon_variable = 0
-    elsif tipo_contrato == "variable_venta_bruta" || tipo_contrato == "variable_venta_neta"
+    elsif tipo_canon == 2 || tipo_canon == 3
       canon_fijo = 0
       monto_minimo_v = contrato.monto_minimo_ventas
       if vmt >= monto_minimo_v
@@ -108,7 +99,7 @@ class ContratoAlquiler < ActiveRecord::Base
       else
         canon_variable = 0
       end
-    elsif tipo_contrato == "fijo_y_variable_venta_bruta" ||  tipo_contrato == "fijo_y_variable_venta_neta"
+    elsif tipo_canon == 4 ||  tipo_canon == 5
       canon_fijo = contrato.canon_fijo_ml
       monto_minimo_v = contrato.monto_minimo_ventas
 
@@ -121,38 +112,52 @@ class ContratoAlquiler < ActiveRecord::Base
       canon_fijo = 0
       canon_variable = 0
     end
-
     canon_fijo = 0 if canon_fijo.nil?
     canon_variable = 0 if canon_variable.nil?
     canon_alquiler = canon_fijo + canon_variable
-    obj = {
-        'canon_fijo' => canon_fijo,
-        'canon_variable' => canon_variable,
-        'canon_alquiler' => canon_alquiler
-      }
-    return  obj
+    return  {canon_fijo: canon_fijo,canon_variable: canon_variable,canon_alquiler: canon_alquiler}
   end
 
+  def calcular_canon_variable_ml(venta_monto_bruto,venta_monto_neto)
+    canon_variable_ml = 0
+    tipo_canon = self.tipo_canon_alquiler.id
+    if tipo_canon >= 2 && tipo_canon <= 5
+      if tipo_canon == 3 || tipo_canon == 5
+        monto_ventas = venta_monto_neto
+      else
+        monto_ventas = venta_monto_bruto
+      end
+      monto_minimo_ventas = self.monto_minimo_ventas
+      if monto_ventas >= monto_minimo_ventas
+        canon_variable_ml = (monto_ventas - monto_minimo_ventas)*(self.porc_canon_ventas/100)
+      end
+    end
+    return  canon_variable_ml
+  end
+
+  # Obtiene el contrato de alquiler mas reciente de la tienda
+  def self.get_contrato_alquiler(tienda_id)
+    where(tienda_id: tienda_id).last
+  end
+
+  # Obtiene el contrato de alquiler vigente de la tienda
   def self.get_contrato_vigente(tienda)
-    return self.where("estado_contrato = ? AND tienda_id = ?",true,tienda)
+    self.where(estado_contrato: true, tienda_id: tienda.id)
+  end
+
+  # Obtiene el contrato de alquiler vigente a la fecha (mes-año), de la tienda
+  def self.get_contrato_vigente_fecha(tienda_id,year,month)
+    fecha = year.to_s + '/' + month.to_s + '/1'
+    where("tienda_id = ? AND fecha_inicio <= ? AND fecha_fin >= ?",tienda_id,fecha,fecha).first
+  end
+
+  def self.get_tipo_canon_alquiler(tienda_id)
+    where(tienda_id: tienda_id).last.tipo_canon_alquiler.tipo
   end
 
   def self.get_tipo_canon(tienda)
-    return self.find_by("estado_contrato = ? AND tienda_id = ?",true,tienda).tipo_canon_alquiler.tipo_nombre
+    where(tienda_id: tienda.id).last.tipo_canon_alquiler.tipo
   end
 
 
-
-=begin
-  def self.get_canons_xmes(mall,year,mes)
-    canon_fijo = 0
-    canon_variable = 0
-    suma_canons = 0
-    canons = Array.new
-    mall.tiendas do |tienda|
-      contrato = ContratoAlquiler.get_contrato_vigente(tienda)
-      canon_fijo = contrato.canon_fijo
-      canon_variable = contrato.monto_canon_variable
-  end
-=end
 end

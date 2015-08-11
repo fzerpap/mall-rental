@@ -57,5 +57,8 @@
                       &nbsp;
                       %td= r.radio_button
             .form-group
-              .col-sm-3.col-sm-offset-9
-                = f.submit "Actualizar", class: "btn btn-warning btn-block"
+              .col-sm-3
+                = link_to users_path, class: 'btn btn-warning btn-block' do
+                  Regresar
+              .col-sm-3.col-sm-offset-6
+                = f.submit "Actualizar", class: "btn btn-mall btn-block"

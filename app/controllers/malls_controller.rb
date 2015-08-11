@@ -56,12 +56,17 @@ class MallsController < ApplicationController
   # DELETE /malls/1
   # DELETE /malls/1.json
   def destroy
-    @mall.destroy
     respond_to do |format|
-      format.html { redirect_to malls_url, notice: 'Mall eliminado exitosamente.' }
-      format.json { head :no_content }
+      if @mall.destroy
+        format.html { redirect_to malls_path, notice: "Mall #{@mall.nombre} eliminado satisfactoriamente"  }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to malls_path, alert: "El mall #{@mall.nombre} no puede ser eliminado, porque tiene usuarios asociados"  }
+        format.json { head :no_content }
+      end
     end
   end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

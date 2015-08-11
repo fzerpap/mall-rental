@@ -44,7 +44,7 @@
                         %td= contrato.nro_contrato
                         %td= contrato.cliente.tipo_servicio.tipo_humanize
                         %td= !contrato.tipo_contrato_servicio.nil? ? contrato.tipo_contrato_servicio.tipo_contrato : ''
-                        %td= ! contrato.precio_servicio.nil? ?  contrato.precio_servicio.precio_usd : ''
+                        %td= !contrato.precio_servicio.nil? ?  contrato.precio_servicio.precio_usd : ''
                         %td= contrato.locatarios
                         %td= ContratoServicio.format_fecha(contrato.fecha_inicio)
                         %td= contrato.fecha_fin.strftime("%d/%m/%Y")

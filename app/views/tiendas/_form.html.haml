@@ -53,7 +53,7 @@
             = f.label :monto_garantia_usd, class: 'col-sm-2 control-label' do
               Depósito Garantía ($):
             .col-sm-10
-              = f.text_field :monto_garantia_usd, readonly: true, class: 'form-control', id: 'tienda_monto_garantia_usd'
+              = f.text_field :monto_garantia_usd, readonly: true, class: 'form-control numeric', id: 'tienda_monto_garantia_usd'
           .form-group
             = f.label :codigo_contable, class: 'col-sm-2 control-label' do
               Código Contable:
@@ -67,7 +67,7 @@
               = c.label :tipo_canon_alquiler_id, class: 'col-sm-3 control-label' do
                 Tipo Canon Alquiler:
               .col-sm-9
-                = c.select :tipo_canon_alquiler_id, options_from_collection_for_select(TipoCanonAlquiler.all, :id, :tipo_nombre, selected: c.object.tipo_canon_alquiler_id || nil), {include_blank: 'Seleccione un Tipo de Canon de Alquiler'}, {class: 'form-control tipo_canon_alquiler_required', id: 'select_canon_alquiler'}
+                = c.select :tipo_canon_alquiler_id, options_from_collection_for_select(TipoCanonAlquiler.order(:id), :id, :tipo_nombre, selected: c.object.tipo_canon_alquiler_id || nil), {include_blank: 'Seleccione un Tipo de Canon de Alquiler'}, {class: 'form-control tipo_canon_alquiler_required', id: 'select_canon_alquiler'}
             .form-group
               = c.label :fecha_inicio, class: 'col-sm-3 control-label' do
                 Inicio del Contrato:
@@ -78,10 +78,10 @@
                 Fin del Contrato:
               .col-sm-9.form-inline
                 = c.date_select :fecha_fin, {default: "31/12/#{Date.today.year}".to_date}, class: 'form-control'
-            %div#canon_fijo{style: (c.object.tipo_canon_alquiler == 'fijo' || c.object.tipo_canon_alquiler == 'fijo_y_variable_venta_bruta' || c.object.tipo_canon_alquiler == 'fijo_y_variable_venta_neta') ? '' : 'display:none'}
+            %div#canon_fijo{style: (c.object.tipo_canon_alquiler.id == 1 || c.object.tipo_canon_alquiler.id == 4 || c.object.tipo_canon_alquiler.id == 5) ? '' : 'display:none'}
               .form-group
                 = c.label :canon_fijo_ml, class: 'col-sm-3 control-label' do
-                  Canón Fijo (ML):
+                  Canon Fijo (ML):
                 .col-sm-8
                   = c.text_field :canon_fijo_ml, class: 'form-control numeric_contrato_alquiler canon_fijo_ml numeric', id: 'canon_fijo_tienda'
                 .col-sm-1.text-left
@@ -90,10 +90,10 @@
                 = c.label :canon_fijo_usd, class: 'col-sm-3 control-label ' do
                   Canón Fijo ($):
                 .col-sm-8
-                  = c.text_field :canon_fijo_usd, readonly: true,  class: 'form-control numeric_contrato_alquiler canon_fijo_usd'
+                  = c.text_field :canon_fijo_usd, readonly: true,  class: 'form-control numeric_contrato_alquiler canon_fijo_usd campo_numerico'
                 .col-sm-1.text-left
                   %span $
-            %div#canon_porcentaje{style: (c.object.tipo_canon_alquiler == 'variable' || c.object.tipo_canon_alquiler == 'fijo_y_variable_venta_bruta' || c.object.tipo_canon_alquiler == 'fijo_y_variable_venta_neta') ? '' : 'display:none'}
+            %div#canon_porcentaje{style: (c.object.tipo_canon_alquiler.id >= 2 && c.object.tipo_canon_alquiler.id <= 5) ? '' : 'display:none'}
               .form-group
                 = c.label :porc_canon_ventas, class: 'col-sm-3 control-label' do
                   \% Canon por Ventas:
@@ -105,7 +105,7 @@
                 = c.label :monto_minimo_ventas, class: 'col-sm-3 control-label' do
                   Monto Mínimo Ventas Mensual:
                 .col-sm-8
-                  = c.text_field :monto_minimo_ventas, readonly: true, class: 'form-control numeric_contrato_alquiler monto_minimo_ventas', id: 'monto_minimo_tienda'
+                  = c.text_field :monto_minimo_ventas, readonly: true, class: 'form-control numeric_contrato_alquiler monto_minimo_ventas numeric', id: 'monto_minimo_tienda'
                 .col-sm-1.text-left
                   %span Ventas
             .form-group

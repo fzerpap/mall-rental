@@ -43,12 +43,13 @@
               %td= tienda.contrato_alquilers.last.fecha_inicio_fix
               %td= tienda.contrato_alquilers.last.fecha_fin_fix
               %td= tienda.vencido?
+
               %td
                 = link_to edit_tienda_path(tienda) do
-                  %i.fa.fa-edit
-                &nbsp;
-                &nbsp;
-                = link_to tienda, method: :delete, data: { confirm: "Seguro de que desea eliminar la tienda #{tienda.nombre}" }do
+                  %i.fa.fa-pencil
+                  &nbsp;
+                  &nbsp;
+                = link_to tienda, method: :delete, data: { confirm: "Seguro que desea eliminar la tienda #{tienda.nombre}" } do
                   %i.fa.fa-trash
               %td
                 = link_to user_tiendas_path(tienda: tienda.nombre, id: tienda.id) do

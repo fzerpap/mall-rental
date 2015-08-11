@@ -5,21 +5,42 @@ module Dynamic
       year = params[:year]
       mall = current_user.mall
 
-      totales = CobranzaAlquiler.get_total_cobranzas_xmes(mall,year)
-      ventas_mes = VentaMensual.get_ventas_xmes(mall,year)
-      suma_total = VentaMensual.suma_monto_bruto(mall,year)
+      # Obtiene las cobranzas y las ventas x mes
+      cobranzas = CobranzaAlquiler.get_cobranzas_xmes(mall,year)
+      ventas    = VentaMensual.get_ventas_xmes(mall,year)
 
-      total_canon_x_ventas = ActionController::Base.helpers.number_to_currency(totales[:total_canon_variable], separator: ',', delimiter: '.', format: "%n %u", unit: "")
-      total_canon_fijo = ActionController::Base.helpers.number_to_currency(totales[:total_canon_fijo], separator: ',', delimiter: '.', format: "%n %u", unit: "")
-      suma_total = ActionController::Base.helpers.number_to_currency(suma_total, separator: ',', delimiter: '.', format: "%n %u", unit: "")
-      total_canons = ActionController::Base.helpers.number_to_currency(totales[:total_facturado], separator: ',', delimiter: '.', format: "%n %u", unit: "")
-      today = Time.now
-      if (year == today.strftime("%Y"))
-        mes_fin = today.strftime("%m").to_i - 1
-      else
-        mes_fin = 12
+      # inicializa valores
+      array_venta_ycanon = Array.new
+      total_ventas = total_canon_fijo = total_canon_variable = total_canon = i = 0
+      meses = ['Enero', 'Febrero', 'Marzo', 'Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+
+      # Une las ventas con las cobranznas (conones de alquiler)
+      ventas.each do |venta|
+        canon_fijo     = cobranzas[i] != nil ? cobranzas[i][:monto_canon_fijo]: 0
+        canon_variable = cobranzas[i] != nil ? cobranzas[i][:monto_canon_variable]: 0
+        canon_total    = canon_fijo + canon_variable
+
+        venta_ycanon = {mes: meses[venta.mes - 1],
+            monto_ventas: ActionController::Base.helpers.number_to_currency(venta.monto_bruto, separator: ',', delimiter: '.', format: "%n %u", unit: ""),
+            canon_fijo: ActionController::Base.helpers.number_to_currency(canon_fijo, separator: ',', delimiter: '.', format: "%n %u", unit: ""),
+            canon_variable: ActionController::Base.helpers.number_to_currency(canon_variable, separator: ',', delimiter: '.', format: "%n %u", unit: ""),
+            canon_total: ActionController::Base.helpers.number_to_currency(canon_total, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+            }
+        array_venta_ycanon << venta_ycanon
+
+        i += 1
+        total_ventas         += venta.monto_bruto
+        total_canon_fijo     += canon_fijo
+        total_canon_variable += canon_variable
+        total_canon          += canon_total
       end
-      render json: [ventas: ventas_mes, result: true, suma_total: suma_total, total_canon_x_ventas: total_canon_x_ventas, total_canon_fijo: total_canon_fijo, total_canons: total_canons, mes_fin: mes_fin]
+      # Formateando los totales
+      total_ventas         = ActionController::Base.helpers.number_to_currency(total_ventas, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+      total_canon_fijo     = ActionController::Base.helpers.number_to_currency(total_canon_fijo, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+      total_canon_variable = ActionController::Base.helpers.number_to_currency(total_canon_variable, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+      total_canon          = ActionController::Base.helpers.number_to_currency(total_canon, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+
+      render json: [ventas: array_venta_ycanon, result: true, total_ventas: total_ventas, total_canon_fijo: total_canon_fijo, total_canon_variable: total_canon_variable, total_canon: total_canon, meses: i]
     end
   end
 end

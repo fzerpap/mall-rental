@@ -77,7 +77,7 @@
                   = label_tag :canon_alquiler do
                     Canon Alquiler:
                 .col-md-8
-                  = text_field_tag :canon_alquiler, number_with_precision(@contrato_alquiler.last.canon_fijo_ml, precision: 2, separator: ',', delimiter: '.'), autofocus: true, class: 'form-control', readonly: 'readonly'
+                  = text_field_tag :canon_alquiler, number_with_precision(@contrato_alquiler.canon_fijo_ml, precision: 2, separator: ',', delimiter: '.'), autofocus: true, class: 'form-control', readonly: 'readonly'
           = render @render
 
           %br
@@ -87,6 +87,6 @@
             .col-md-2
               = button_tag 'Cancelar', class: "btn btn-warning btn-block", id: "btn_cancelar_venta", type: "button"
             .col-md-3.col-md-offset-2
-              = button_tag "Subir Documentos de Soporte", class: "btn btn-danger btn-block", id: "btn_up_documento_venta", disabled:'disabled'
+              = button_tag "Subir Documentos de Soporte", class: "btn btn-danger btn-block", id: "btn_up_documento_venta", type: "button" #disabled:'disabled'
             .col-md-3
-              = button_tag 'Cerrar el mes de ventas', class: "btn btn-danger btn-block btn_cerrar_venta", id: "btn_cerrar_mes_venta", type: "button"
+              = button_tag 'Cerrar el mes de ventas', class: "btn btn-danger btn-block btn_cerrar_venta", id: "btn_cerrar_mes_venta", type: "button", disabled:'disabled'

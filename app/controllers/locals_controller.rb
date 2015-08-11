@@ -9,14 +9,10 @@ class LocalsController < ApplicationController
   # GET /locals
   # GET /locals.json
   def index
-    @locals = Local.where(mall_id: current_user.mall.id)
-    @local1 = Local.new
-    @local2 = Local.new
-
+    @locals = Local.where(mall_id: current_user.mall.id).order(:nro_local)
     if @locals.blank?
       redirect_to controller: 'locals', action: 'new'
     end
-
   end
 
   # GET /locals/1
@@ -43,7 +39,6 @@ class LocalsController < ApplicationController
     @local = Local.new(local_params)
     respond_to do |format|
       if @local.save
-       # format.html { redirect_to locals_path(mall_id: local_params[:mall_id]), notice: 'Local fue creado satisfactoriamente.' }
         format.html { redirect_to local_index_path, notice: 'Local fue creado satisfactoriamente.' }
         format.json { render :index, status: :created, location: @local }
       else
@@ -70,11 +65,14 @@ class LocalsController < ApplicationController
   # DELETE /locals/1
   # DELETE /locals/1.json
   def destroy
-    @mall_id = @local.mall_id
-    @local.destroy
     respond_to do |format|
-      format.html { redirect_to local_index_path notice: 'Local eliminado exitosamente.' }
-      format.json { head :no_content }
+      if @local.destroy
+        format.html { redirect_to local_index_path, notice: 'Local eliminado exitosamente' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to local_index_path, alert: 'El local no pueder ser eliminado porque tiene tiendas asociadas' }
+        format.json { head :no_content }
+      end
     end
   end
 

@@ -11,6 +11,7 @@
 #= require bootstrapValidator/bootstrapValidator
 #= require jquery.blockUI.js
 #= require numeric
+#= require jquery.number.js
 
 jQuery(document).ready ($) ->
 
@@ -50,7 +51,7 @@ jQuery(document).ready ($) ->
           numeric:
             message: 'Debe ser un valor numerico, decimales separados por punto'
           callback:
-            message: 'Canón fijo en moneda local obligatorio'
+            message: 'Canon fijo en moneda local obligatorio'
             callback: (value, validator, $field) ->
               canon = $('#select_canon_alquiler').val()
               if (canon == '1' or canon == '4' or canon == '5') and (value == '' || value == '0.0')
@@ -194,16 +195,21 @@ jQuery(document).ready ($) ->
         $('.canon_fijo_usd').val(data.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"))
 
   $("#porc_canon_tienda").inputmask("Regex", {
-    regex: "[0-9.]{1,5}%"
+    regex: "[0-9.]{1,25}"
   });
 
+
   $('#canon_fijo_tienda').inputmask("Regex", {
-    regex: "[0-9,.]{1,25}%"
+    regex: "[0-9.]{1,25}"
   });
 
   $('#tienda_monto_garantia').inputmask("Regex", {
-    regex: "[0-9,.]{1,25}%"
+    regex: "[0-9.]{1,25}"
   });
+
+
+ # $(".campo_numerico").number(true,2,',','.')
+
 
   $('#tienda_monto_garantia').keyup ->
     $.ajax

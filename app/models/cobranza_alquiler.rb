@@ -42,8 +42,8 @@ class CobranzaAlquiler < ActiveRecord::Base
     return cobranzas
   end
 
-  def self.get_cobranza_xtienda(tienda,year,month)
-      return CobranzaAlquiler.where('anio_alquiler = ? AND mes_alquiler = ? AND tienda_id = ?', year,month,tienda.id)
+  def self.get_cobranza_mes_tienda(tienda_id,year,month)
+      where(tienda_id: tienda_id, anio_alquiler: year, mes_alquiler:month).first
   end
 
   def self.saldo_deudor_x_tienda(tienda_id)
@@ -151,7 +151,7 @@ class CobranzaAlquiler < ActiveRecord::Base
     return cobranzas
   end
 
-  def self.get_total_cobranzas_xmes(mall,year)
+  def self.get_total_cobranzas_xmesBORRAR(mall,year)
     tiendas_mall = mall.tiendas
     total_canon_fijo = 0
     total_canon_variable = 0
@@ -182,5 +182,92 @@ class CobranzaAlquiler < ActiveRecord::Base
     hash_totales[:total_pagado_usd] = ActionController::Base.helpers.number_to_currency(total_pagado_usd, separator: ',', delimiter: '.', format: "%n %u", unit: "")
     hash_totales[:result] = result
     return hash_totales
+  end
+
+  def self.get_cobranzas_xmes(mall,year)
+    ids_tiendas = mall.tiendas.pluck(:id)
+    select("mes_alquiler,
+          sum(monto_canon_fijo) as monto_canon_fijo,
+          sum(monto_canon_variable) as monto_canon_variable,
+          sum(monto_alquiler) as monto_alquiler")
+          .where(tienda_id: ids_tiendas, anio_alquiler: year)
+          .group(:mes_alquiler).order(:mes_alquiler)
+  end
+
+  # Obtiene la gestión de cobranza que incluye: ventas, canon de alquiler, etc
+  def self.get_getion_cobranzaBorrar(mall,year,month)
+    cobranza = Array.new
+    total_canon_fijo = total_canon_variable = total_ventas = 0
+    # Obtiene las ventas del mes x tienda
+    venta_mes_xtienda = VentaMensual.get_ventas_mes_xtienda(mall,year,month)
+    # Recorre las ventas del mes x tienda
+    venta_mes_xtienda.each do |venta|
+      # Obtiene el contrato de alquiler vigente de la tienda para mes-año dado
+      contrato_alquiler = ContratoAlquiler.get_contrato_vigente_fecha(venta.tienda_id,year,month)
+      # Obtiene la cobranza de alquiler de la tienda para el mes dado
+      cobranza_alquiler = CobranzaAlquiler.get_cobranza_mes_tienda(venta.tienda_id,year,month)
+      if cobranza_alquiler == nil
+        tiene_cobranza = false
+        montos_conon   = ContratoAlquiler.calculate_canon(contrato_alquiler,venta.monto_bruto,venta.monto_neto)
+        canon_fijo     = montos_conon[:canon_fijo]
+        canon_variable = montos_conon[:canon_variable]
+      else
+        tiene_cobranza = true
+        canon_fijo     =  cobranza_alquiler.monto_canon_fijo
+        canon_variable =  cobranza_alquiler.monto_canon_variable
+      end
+      total_canon_fijo     += canon_fijo
+      total_canon_variable += canon_variable
+      total_ventas         += venta.monto_bruto
+
+      hash_cobranza = {tienda: venta.tienda_id,tipo_canon: contrato_alquiler.tipo_canon_alquiler.tipo,
+                    editable: venta.editable,venta_mes: venta.monto,venta_neta: venta.monto_neto,
+                    venta_bruta: venta.monto_bruto,canon_fijo: canon_fijo,canon_variable: canon_variable,
+                    total_canon: canon_fijo + canon_variable,tiene_cobranza: tiene_cobranza,
+                    total_ventas: total_ventas,suma_ventas_bruto_tiendas: venta.monto_bruto,
+                    suma_venta_neta: venta.monto_neto,suma_canon_fijo: total_canon_fijo,suma_canon_variable: total_canon_variable,
+                    suma_total_canon: venta.monto_neto + total_canon_variable,suma_total_ventas: total_ventas}
+
+      cobranza << hash_cobranza
+    end
+    return cobranza
+  end
+
+  def self.get_getion_cobranza(mall,year,month)
+    cobranza = Array.new
+    total_canon_fijo = total_canon_variable = total_canon = total_ventas = 0
+    # Obtiene las ventas del mes x tienda
+    venta_mes_xtienda = VentaMensual.get_ventas_mes_xtienda(mall,year,month)
+    # Recorre las ventas del mes x tienda
+    venta_mes_xtienda.each do |venta|
+      # Obtiene el contrato de alquiler vigente de la tienda para mes-año dado
+      contrato_alquiler = ContratoAlquiler.get_contrato_vigente_fecha(venta.tienda_id,year,month)
+      # Obtiene la cobranza de alquiler de la tienda para el mes dado
+      cobranza_alquiler = CobranzaAlquiler.get_cobranza_mes_tienda(venta.tienda_id,year,month)
+      if cobranza_alquiler == nil
+        tiene_cobranza = false
+        canon_variable = contrato_alquiler.calcular_canon_variable_ml(venta.monto_bruto,venta.monto_neto)
+        canon_fijo     = contrato_alquiler.canon_fijo_ml
+      else
+        tiene_cobranza = true
+        canon_fijo     =  cobranza_alquiler.monto_canon_fijo
+        canon_variable =  cobranza_alquiler.monto_canon_variable
+      end
+      total_canon_fijo     += canon_fijo
+      total_canon_variable += canon_variable
+      total_canon          += canon_fijo + canon_variable
+      total_ventas         += venta.monto
+
+      hash_cobranza = {tienda: venta.tienda_id,tipo_canon: contrato_alquiler.tipo_canon_alquiler.tipo,
+                       editable: venta.editable,venta_mes: venta.monto,venta_neta: venta.monto_neto,
+                       venta_bruta: venta.monto_bruto,canon_fijo: canon_fijo,canon_variable: canon_variable,
+                       canon_alquiler: canon_fijo + canon_variable,tiene_cobranza: tiene_cobranza,
+                       total_ventas: total_ventas,total_canon_fijo: total_canon_fijo,
+                       total_canon_variable: total_canon_variable,total_canon: total_canon
+                      }
+
+      cobranza << hash_cobranza
+    end
+    return cobranza
   end
 end

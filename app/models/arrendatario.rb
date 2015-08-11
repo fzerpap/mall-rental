@@ -19,12 +19,21 @@
 
 class Arrendatario < ActiveRecord::Base
   belongs_to :mall
+  has_many :tiendas
 
-  has_many :tiendas, dependent: :destroy
+  before_destroy :confirm_presence_of_tiendas
 
   validates :nombre, :rif, :direccion, :telefono, :telefono_rl, :nombre_rl, :cedula_rl, :mall_id, presence: true
+  validates :nombre, uniqueness: true
+
+  private
+  def confirm_presence_of_tiendas
+    if tiendas.any?
+      return false
+    end
+  end
 
   def self.valid_arrendatarios(user)
-    return Arrendatario.where(mall_id: user.mall_id)
+    return Arrendatario.where(mall_id: user.mall_id).order(:nombre)
   end
 end

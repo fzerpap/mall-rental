@@ -16,4 +16,12 @@ class Pai < ActiveRecord::Base
   belongs_to :moneda
   validates :nombre, presence: true
   validates :nombre, uniqueness: true
+
+  before_destroy :confirm_presence_of_pais
+
+  def confirm_presence_of_pais
+    if malls.any?
+      return false
+    end
+  end
 end

@@ -19,10 +19,14 @@
 
 
 class Local < ActiveRecord::Base
+
   belongs_to :mall
   belongs_to :nivel_mall
   belongs_to :tipo_local
-  has_one :tienda, dependent: :destroy
+  has_many  :tiendas
+
+  before_destroy :confirm_presence_of_tiendas
+
   validates :tipo_local_id, :nro_local, :area_planta, :area_terraza, :area_mezanina, presence: true
   validates :area_planta, :area_terraza, :area_mezanina, numericality: true
   validates :tipo_estado_local, presence: true
@@ -32,8 +36,15 @@ class Local < ActiveRecord::Base
 
   enum tipo_estado_local: [:Disponible, :Alquilado, :En_Reparacion, :Vendido]
 
+  private
+  def confirm_presence_of_tiendas
+    if tiendas.any?
+      return false
+    end
+  end
+
   def self.valid_locals(user)
-    return Local.joins(:mall).where(malls: {id: user.mall_id})
+    return Local.joins(:mall).where(malls: {id: user.mall_id}).order(:nro_local)
   end
 
   def self.valid_tipo_estado_local

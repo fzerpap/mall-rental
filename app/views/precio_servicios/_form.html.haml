@@ -21,7 +21,7 @@
           .form-group
             = f.label :tipo_contrato_servicio_id, "Tipo de Contrato de Servicio: ", class: 'col-sm-2 control-label'
             .col-sm-10
-              = f.select :tipo_contrato_servicio_id, options_from_collection_for_select(TipoContratoServicio.all, :id, :tipo_humanize, selected: f.object.tipo_contrato_servicio_id.present? ? f.object.tipo_contrato_servicio_id : nil) ,{include_blank: 'Seleccione un Tipo de Contrato de Servicio'}, {class: 'form-control'}
+              = f.select :tipo_contrato_servicio_id, options_from_collection_for_select(TipoContratoServicio.all, :id, :tipo_contrato, selected: f.object.tipo_contrato_servicio_id.present? ? f.object.tipo_contrato_servicio_id : nil) ,{include_blank: 'Seleccione un Tipo de Contrato de Servicio'}, {class: 'form-control'}
           .form-group
             .col-sm-3.col-sm-offset-9
               = f.hidden_field :mall_id, :value => @mall.id

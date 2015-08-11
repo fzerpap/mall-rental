@@ -19,13 +19,16 @@ module Dynamic
 
       ventas_mes = set_grid_ventas_mes(tienda,year,month,dias_mes)
       cant_dias_no_lab = CalendarioNoLaborable.cantidad_dias_no_lab(tienda.mall.id,month,year)
-      suma = VentaMensual.suma_venta_mes(tienda,year,month)
+
+      suma = VentaMensual.suma_venta_mes(tienda.id,year,month)
+
       cantidad_ventas_mes = VentaDiarium.cantidad_ventas_mes(month,year,tienda)
 
       render json: [ventas: ventas_mes, result: true, suma: suma, tienda_id: tienda_id, dias_no_lab: cant_dias_no_lab, cantidad_ventas_mes: cantidad_ventas_mes, dias_mes: dias_mes, mes_actual:mes_actual]
     end
 
     def guardar_ventas
+
       fecha = params[:fecha]
       valor = params[:valor]
       if params[:nota_credito].nil?
@@ -72,6 +75,7 @@ module Dynamic
 
       if opcion == 'new'
         venta = VentaDiarium.new(fecha: fecha, monto: valor, monto_notas_credito: nota_credito, monto_bruto: valor_bruto, monto_bruto_usd: valor_usd, monto_costo_venta: costo_venta, monto_neto: venta_neta, monto_neto_usd: venta_neta_usd, venta_mensual_id: id_mensual)
+
         respond_to do |format|
           if venta.save
 
@@ -150,10 +154,10 @@ module Dynamic
     end
 
     def set_grid_ventas_mes(tienda,year,month,dias_mes)
-      venta_mensual = VentaMensual.get_venta_mes_tienda(tienda.id,year,month)
-
+      venta_mensual = VentaMensual.get_venta_mes_tienda(tienda,year,month)
       ventas_mes = Array.new
       for i in 1..dias_mes
+        monto_notas_c = 0
         fecha = Date.new(year.to_i,month.to_i,i)
         dia_no_lab = CalendarioNoLaborable.is_no_lab(fecha,tienda.mall.id)
         if !venta_mensual.blank?

@@ -32,8 +32,7 @@ class VentaDiarium < ActiveRecord::Base
   end
 
   def self.get_venta_dia_tienda(fecha,venta_mensual)
-    venta = self.find_by('fecha = ? AND venta_mensual_id = ?', fecha,venta_mensual.id)
-    return venta
+    find_by('fecha = ? AND venta_mensual_id = ?', fecha,venta_mensual.id)
   end
 
   def self.cantidad_ventas_mes(year,mes,tienda)

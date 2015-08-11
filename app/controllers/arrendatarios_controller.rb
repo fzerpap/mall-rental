@@ -8,7 +8,7 @@ class ArrendatariosController < ApplicationController
 
 
   def index
-    @arrendatarios = current_user.mall.arrendatarios
+    @arrendatarios = current_user.mall.arrendatarios.order(:nombre)
     if @arrendatarios.blank?
       redirect_to new_arrendatario_path
     end
@@ -48,9 +48,17 @@ class ArrendatariosController < ApplicationController
   end
 
   def destroy
-    @arrendatario.destroy
-    respond_with(@arrendatario)
+    respond_to do |format|
+      if @arrendatario.destroy
+        format.html { redirect_to arrendatarios_path, notice: 'Arrendatario eliminado exitosamente' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to arrendatarios_path, alert: 'El arrendatario no pueder ser eliminado porque tiene tiendas asociadas' }
+        format.json { head :no_content }
+      end
+    end
   end
+
 
   def show
   end

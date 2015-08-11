@@ -36,7 +36,7 @@
                       %td= precio.fecha.strftime("%d-%m-%Y")
                       %td= number_with_precision(precio.precio_usd, precision: 2, separator: ',', delimiter: '.')
                       %td= precio.tipo_servicio.tipo_humanize
-                      %td= precio.tipo_contrato_servicio.tipo_humanize
+                      %td= precio.tipo_contrato_servicio.tipo_contrato
                       %td
                         = link_to edit_precio_servicio_path(precio) do
                           %i.fa.fa-pencil

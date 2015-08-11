@@ -43,7 +43,10 @@
               .col-sm-10
                 = f.collection_select(:moneda_id, Moneda.all, :id, :nombre)
             .form-group
-              .col-sm-3.col-sm-offset-9
-                = f.submit "Actualizar", class: "btn btn-warning btn-block"
+              .col-sm-3
+                = link_to pais_path, class: 'btn btn-warning btn-block' do
+                  Regresar
+              .col-sm-3.col-sm-offset-6
+                = f.submit "Guardar", class: "btn btn-mall btn-block"
 
 

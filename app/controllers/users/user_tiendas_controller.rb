@@ -81,10 +81,13 @@ class Users::UserTiendasController < ApplicationController
       @tienda = current_user.mall.tiendas.find_by(id: ActionController::Parameters.new(id: params[:id]).permit(:id)[:id])
     end
 
-    def set_roles
-      @roles = Role.cliente_tiendas
-      if @roles.blank?
-        redirect_to new_role_path, alert: 'No existen Roles para Clientes Tienda.' and return
-      end
+  def set_roles
+
+    @roles = Role.joins(:malls).where(malls: {id: current_user.mall.id} ,role_type: Role.role_types[:cliente_tienda])
+
+    if @roles.blank?
+      redirect_to new_role_path, alert: 'No existen roles para clientes tienda.' and return
     end
+  end
+
 end
