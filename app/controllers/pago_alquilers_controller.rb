@@ -6,7 +6,7 @@ class PagoAlquilersController < ApplicationController
 
   # GET /pago_alquilers
   # GET /pago_alquilers.json
-  def index
+  def indexBORRAR
 
     if params[:year].nil?
       today = Time.now
@@ -18,9 +18,11 @@ class PagoAlquilersController < ApplicationController
     end
 
     @cobranza_alquilers = CobranzaAlquiler.get_cobranza_mes_xtienda(current_user.mall,year,month)
-    @suma_monto_x_cobrar = CobranzaAlquiler.saldo_deudor_x_mes(current_user.mall,year,month)
-    @suma_monto_alquiler = CobranzaAlquiler.monto_alquiler_x_mes(current_user.mall,year,month)
-    @suma_monto_pagado = @suma_monto_alquiler - @suma_monto_x_cobrar
+    @total_cobranza     = CobranzaAlquiler.get_total_cobranza_mes(current_user.mall,year,month)
+
+    #@suma_monto_x_cobrar = CobranzaAlquiler.saldo_deudor_x_mes(current_user.mall,year,month)
+    #@suma_monto_alquiler = CobranzaAlquiler.monto_alquiler_x_mes(current_user.mall,year,month)
+    #@suma_monto_pagado = @suma_monto_alquiler - @suma_monto_x_cobrar
 
     if @suma_monto_pagado > 0
       @month = month.to_i
@@ -36,6 +38,27 @@ class PagoAlquilersController < ApplicationController
         @month = params[:month].to_i
       end
     end
+  end
+
+  def index
+
+    if params[:year].nil?
+      today = Time.now
+      month = today.strftime("%-m").to_i
+      year = today.strftime("%Y")
+      if month > 1
+        month = month - 1
+      else
+        month = 12
+        year = year - 1
+      end
+    else
+      month = params[:month]
+      year = params[:year]
+    end
+    @cobranza_alquilers  = CobranzaAlquiler.get_cobranza_mes_xtienda(current_user.mall,year,month)
+    @total_cobranza     = CobranzaAlquiler.get_total_cobranza_mes(current_user.mall,year,month)
+    @month = month.to_i
   end
 
   # GET /pago_alquilers/1
@@ -127,9 +150,11 @@ class PagoAlquilersController < ApplicationController
     year = Time.now.strftime("%Y")
     mall = current_user.mall
 
-    @cobranzas = CobranzaAlquiler.get_cobranza_xmes(mall,year)
-    @totales = CobranzaAlquiler.get_total_cobranzas_xmes(mall,year)
+    @cobranzas = CobranzaAlquiler.get_cobranzas_xmes(mall,year)
+    @totales = CobranzaAlquiler.get_total_cobranzas_anio(mall,year)
 
+    @meses = ["","Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
+    @pagos_mensuales = true
 
   end
 

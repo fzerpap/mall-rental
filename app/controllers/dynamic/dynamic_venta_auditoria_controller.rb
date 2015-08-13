@@ -33,6 +33,8 @@ module Dynamic
       total_canon = ActionController::Base.helpers.number_to_currency(cob[cant][:total_canon], separator: ',', delimiter: '.', format: "%n %u", unit: "")
 
       render json: [ result: true, tiendas: array_tienda, total_canon_variable: total_canon_variable, total_canon_fijo: total_canon_fijo, total_canon: total_canon, total_ventas: total_ventas, mes: month ]
+
+
     end
   end
 end

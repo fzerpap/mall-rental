@@ -176,7 +176,7 @@ class Tienda < ActiveRecord::Base
   def self.estadisticas(mall, fecha_init, fecha_end, nivel_mall_id, actividad_economica_id, tipo_local_id, criterio )
     estadisticas = Array.new
     if criterio == 'tiendas'
-      mall.tiendas.joins(:nivel_mall, :actividad_economica, :tipo_local, :contrato_alquilers).by_actividad_economica(actividad_economica_id).by_rango_contrato(fecha_init, fecha_end).by_tipo_local(tipo_local_id).each do |tienda|
+      mall.tiendas.joins(:nivel_mall, :actividad_economica, :tipo_local, :contrato_alquilers).by_actividad_economica(actividad_economica_id).by_nivel_mall(nivel_mall_id).by_rango_contrato(fecha_init, fecha_end).by_tipo_local(tipo_local_id).each do |tienda|
         puts tienda
         hash_stats = Hash.new
         hash_stats[:venta_diaria] = tienda.venta_diariums.where(fecha: fecha_init.. fecha_end).sum(:monto_bruto)
@@ -251,7 +251,8 @@ class Tienda < ActiveRecord::Base
     return estadisticas
   end
 
-  def self.estadisticas_mensuales(mall, year)
+
+  def self.estadisticas_mensuales(mall, year) # Este método está dando los resultados incorrectos
     estadisticas = Array.new
     (1 .. 12).each do |mes|
       hash_stats = Hash.new
@@ -259,7 +260,7 @@ class Tienda < ActiveRecord::Base
       porc_canon = 0
       ventas = 0
       mall.tiendas.joins(:contrato_alquilers, :venta_diariums).where("extract(year from contrato_alquilers.fecha_fin) = ? OR extract(year from contrato_alquilers.fecha_inicio) = ?", year, year).where("extract(year from venta_diaria.fecha) = ? ", year).each do |tienda|
-        ventas = tienda.venta_mensuals.where(mes: mes).sum(:monto_bruto)
+        ventas = tienda.venta_mensuals.where(anio: year, mes: mes).sum(:monto_bruto)
         canon_fijo = tienda.cobranza_alquilers.where("extract(month from fecha_recibo_cobro) = ?", mes).sum(:monto_canon_fijo)
         porc_canon = tienda.cobranza_alquilers.where("extract(month from fecha_recibo_cobro) = ?", mes).sum(:monto_canon_variable)
       end
@@ -272,5 +273,4 @@ class Tienda < ActiveRecord::Base
     end
     return estadisticas
   end
-
 end

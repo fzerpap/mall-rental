@@ -5,7 +5,16 @@
 #= require jquery.number.js
 #= require jquery-ui/jquery-ui.min.js
 
+#= require bootstrapValidator/bootstrapValidator.js
+#= require jasny/jasny-bootstrap.min
+#= require dataTables/jquery.dataTables.js
+#= require dataTables/dataTables.bootstrap.js
+#= require dataTables/dataTables.responsive.js
+#= require dataTables/dataTables.tableTools.min.js
+
+
 jQuery(document).ready ($) ->
+  table_index_datatable()
   $(".actualizar_ventas").change()
   $(".actualizar_auditoria_ventas").change()
   $(".actualizar_ventas_mes").change()
@@ -323,10 +332,10 @@ $(".actualizar_auditoria_ventas").on "change", ->
     success: (data) ->
       value = data[0]['total_ventas']
       $("#total_ventas_mes").text(value)
-      value1 = data[0]['total_ventas_neta']
+      value1 = data[0]['total_ventas']
       $("#total_ventas_neta_mes").val(value)
       $("#total_ventas_neta_mes").number(value,2,',','.')
-      value2 = data[0]['total_ventas_bruto']
+      value2 = data[0]['total_ventas']
       $("#total_ventas_mes_bruto").text(value2)
       $("#monto_canon_fijo").text(data[0]['total_canon_fijo'])
       $("#monto_canon_x_venta").text(data[0]['total_canon_variable'])
@@ -354,9 +363,9 @@ $(".actualizar_auditoria_ventas").on "change", ->
 
         $("#tbody_mall_ventas").append("<tr><td>"+element.tienda+"</td><td>"+element.actividad_economica+"</td>" +
           "<td>"+element.local+"</td><td>"+element.nivel_ubicacion+"</td>" +
-          "<td>"+element.tipo_canon+"</td><td class='clase_monto'>"+element.ventas_bruto_mes+"</td>" +
+          "<td>"+element.tipo_canon+"</td><td class='clase_monto'>"+element.venta_mes+"</td>" +
           "<td class='clase_monto'>"+element.canon_fijo+"</td><td class='clase_monto'>"+element.canon_variable+"</td>" +
-          "<td class='clase_monto'>"+element.total_canon+"</td>" +
+          "<td class='clase_monto'>"+element.canon_alquiler+"</td>" +
           "<td><a href='/ventas_tiendas/"+element.tienda_id+"/"+data[0]['mes']+"'>Ver Ventas diarias</a></td></tr>")
 
     error: (data)->
@@ -517,4 +526,52 @@ $("#btn_cerrar_mes_venta").on "click", ->
           console.log(data)
         complete: ->
           a=1
+
+table_index_datatable =  ->
+  $('#table_mall_ventas').dataTable
+    'dom': 'T<"clear">lfrtip'
+    'tableTools':
+      'sSwfPath': '../assets/dataTables/swf/copy_csv_xls_pdf.swf'
+      "aButtons": [
+        {
+          "sExtends":     "copy",
+          "sButtonText": 'Copiar &nbsp; <i class="fa fa-files-o"></i>'
+        },
+        {
+          "sExtends":     "csv",
+          "sButtonText": 'Excel &nbsp; <i class="fa fa-file-excel-o"></i>'
+        },
+        {
+          "sExtends":     "pdf",
+          "sButtonText": 'PDF &nbsp; <i class="fa fa-file-pdf-o"></i>'
+        },
+        {
+          "sExtends":     "print",
+          "sButtonText": 'Imprimir &nbsp; <i class="fa fa-print"></i>'
+        },
+      ]
+    "language": {
+      "sProcessing":    'Procesando... <i class="fa fa-spinner fa-spin"></i>',
+      "sLengthMenu":    "Mostrar _MENU_ Registros",
+      "sZeroRecords":   "No se encontraron resultados",
+      "sEmptyTable":    "Ningún dato disponible en esta tabla",
+      "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix":   "",
+      "sSearch":        '<i class="fa fa-search"></i> Buscar: ',
+      "sUrl":           "",
+      "sInfoThousands":  ",",
+      "sLoadingRecords": 'Cargando... <i class="fa fa-spinner fa-spin"></i>',
+      "oPaginate": {
+        "sFirst":    "Primero",
+        "sLast":    "Último",
+        "sNext":    'Siguiente <i class="fa fa-angle-right"></i>',
+        "sPrevious": '<i class="fa fa-angle-left"></i> Anterior'
+      },
+      "oAria": {
+        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
 

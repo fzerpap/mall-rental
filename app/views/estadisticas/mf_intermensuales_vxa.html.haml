@@ -43,21 +43,7 @@
         .col-sm-8
           = collection_select :tipo_local, nil, TipoLocal.all, :id, :tipo, {include_blank: 'Todos'}, {class: 'form-control tienda-filter', id:'tipo_local_select_tiendas'}
   .row
-    .col-md-1
-      %h3
-        Criterio:
-    .col-sm-1
-      = radio_button_tag :stats, 'tiendas', true, class: 'criterio'
-      Tienda
-    .col-sm-1
-      = radio_button_tag :stats, 'nivel_mall', false, class: 'criterio'
-      Nivel Mall
-    .col-sm-1
-      = radio_button_tag :stats, 'actividad_economica', false, class: 'criterio'
-      Actividad Económica
-    .col-sm-1
-      = radio_button_tag :stats, 'tipo_local', false, class: 'criterio'
-      Tipo de Local
+    = hidden_field_tag :criterio, @criterio
     .col-sm-3
       %div#mista_onetake
         %a.btn.btn-mall.btn-block#mista_onetake_button{href: '#'}

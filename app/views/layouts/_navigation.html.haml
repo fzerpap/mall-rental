@@ -142,9 +142,10 @@
             %span.fa.arrow
           %ul{:class => "nav nav-second-level #{is_active_controller('estadisticas')}"}
             - if can? :mf_intermensuales_vxa, :estadisticas
-              %li{class: is_active_action('mf_intermensuales_vxa')}= link_to 'Intermensuales Ventas/Ingresos por Alquiler', estadisticas_intermensuales_ventas_alquiler_path
-            - if can? :mf_mensuales_vxa, :estadisticas
-              %li{class: is_active_action('mf_mensuales_vxa')}= link_to 'Mensuales Ventas/Ingresos por Alquiler', estadisticas_mensuales_ingresos_alquiler_path
+              %li{class: is_active_action('mf_intermensuales_vxa')}= link_to 'Ventas/Ingresos Alquiler x Tiendas', estadisticas_intermensuales_ventas_alquiler_path(criterio: "tiendas")
+              %li{class: is_active_action('mf_intermensuales_vxa')}= link_to 'Ventas/Ingresos Alquiler x Nivel Mall', estadisticas_intermensuales_ventas_alquiler_path(criterio: "nivel_mall")
+              %li{class: is_active_action('mf_intermensuales_vxa')}= link_to 'Ventas/Ingresos Alquiler x Actividad Económica', estadisticas_intermensuales_ventas_alquiler_path(criterio: "actividad_economica")
+              %li{class: is_active_action('mf_intermensuales_vxa')}= link_to 'Ventas/Ingresos Alquiler x Tipo de Local', estadisticas_intermensuales_ventas_alquiler_path(criterio: "tipo_local")
       -#%li{:class => is_active_controller('dashboards')}
       -#  %a{:href => ""}
       -#    %i.fa.fa-th-large

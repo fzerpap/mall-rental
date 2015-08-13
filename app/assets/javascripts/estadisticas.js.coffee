@@ -38,7 +38,7 @@ jQuery(document).ready ($) ->
         nivel_mall_id: $('#nivel_mall_select_tiendas').val()
         actividad_economica_id: $('#actividad_economica_select_tiendas').val()
         tipo_local_id: $('#tipo_local_select_tiendas').val()
-        criterio: $('input:radio[name=stats]:checked').val()
+        criterio: $('#criterio').val()
       success: (data) ->
         html = $('#table_intermensuales')
         html.empty()

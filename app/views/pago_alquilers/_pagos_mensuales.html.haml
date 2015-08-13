@@ -1,38 +1,41 @@
-- if @totales[:result]
+- if @pagos_mensuales == true #totales[:result]
   - @cobranzas.each do |cobranza|
+    - monto_pagado = cobranza[:monto_alquiler] - cobranza[:saldo_deudor]
+    - mes = @meses[cobranza.mes_alquiler]
     %tr
       %td.text-center
-        = cobranza[:mes]
-      %td.text-center
-        = cobranza[:canon_fijo]
-      %td.text-center
-        = cobranza[:canon_variable]
-      %td.text-center
-        = cobranza[:facturado]
-      %td.text-center
-        = cobranza[:pagado]
-      %td.text-center
-        = cobranza[:pagado_usd]
-      %td.text-center
-        = cobranza[:x_cobrar]
+        = mes
+      %td{ :class => 'text-right' }
+        = ActionController::Base.helpers.number_to_currency(cobranza.monto_canon_fijo, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+      %td{ :class => 'text-right' }
+        = ActionController::Base.helpers.number_to_currency(cobranza.monto_canon_variable, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+      %td{ :class => 'text-right' }
+        = ActionController::Base.helpers.number_to_currency(cobranza.monto_alquiler, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+      %td{ :class => 'text-right' }
+        = ActionController::Base.helpers.number_to_currency(monto_pagado, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+      %td{ :class => 'text-right' }
+        = ActionController::Base.helpers.number_to_currency(monto_pagado * CambioMoneda.last.cambio_ml_x_usd, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+      %td{ :class => 'text-right' }
+        = ActionController::Base.helpers.number_to_currency(cobranza.saldo_deudor, separator: ',', delimiter: '.', format: "%n %u", unit: "")
       %td.text-center
         = link_to ventas_mes_tienda_path(month: cobranza[:num_mes]) do
           %i.fa.fa-search
           Ver Detalles de Pagos
-  %tr#tfoot-ventas-mensuales-mall
-    %td.text-center TOTAL
-    %td#suma_pagado_canon_fijo
-      = @totales[:total_canon_fijo]
-    %td#suma_pagado_canon_variable
-      = @totales[:total_canon_variable]
-    %td#suma_total_facturado
-      = @totales[:total_facturado]
-    %td#suma_total_pagado
-      = @totales[:total_pagado]
-    %td#suma_total_pagado_usd
-      = @totales[:total_pagado_usd]
-    %td#suma_monto_x_cobrar
-      = @totales[:total_x_cobrar]
+  %tr
+    - total_pagado = @totales[0][:monto_alquiler]-@totales[0][:saldo_deudor]
+    %td.text-right TOTAL
+    %td{ :class => 'text-right' }
+      = ActionController::Base.helpers.number_to_currency(@totales[0][:monto_canon_fijo], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+    %td{ :class => 'text-right' }
+      = ActionController::Base.helpers.number_to_currency(@totales[0][:monto_canon_variable], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+    %td{ :class => 'text-right' }
+      = ActionController::Base.helpers.number_to_currency(@totales[0][:monto_alquiler], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+    %td{ :class => 'text-right' }
+      = ActionController::Base.helpers.number_to_currency(total_pagado, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+    %td{ :class => 'text-right' }
+      = ActionController::Base.helpers.number_to_currency(total_pagado * CambioMoneda.last.cambio_ml_x_usd, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+    %td{ :class => 'text-right' }
+      = ActionController::Base.helpers.number_to_currency(@totales[0][:saldo_deudor], separator: ',', delimiter: '.', format: "%n %u", unit: "")
 - else
   %tr
     %td.text-center Enero

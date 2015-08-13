@@ -1,9 +1,11 @@
 class EstadisticasController < ApplicationController
   before_action :authenticate_user!
-  authorize_resource class: :estadisticas
+  #authorize_resource class: :estadisticas
   before_action :check_user_mall
 
   def mf_intermensuales_vxa
+    @criterio = params[:criterio]
+
   end
 
   def filtro_intermensuales

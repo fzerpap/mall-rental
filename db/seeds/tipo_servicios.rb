@@ -1,3 +1,3 @@
-TipoServicio.create!([{tipo: 'mall'}, {tipo: 'mall_rental'}, {tipo: 'mall_condominio'}])
+TipoServicio.create!([{tipo: 'Mall'}, {tipo: 'Mall Rental'}, {tipo: 'Mall Condominio'}])
 
 puts "#---- TIPO SERVICIOS ------#"

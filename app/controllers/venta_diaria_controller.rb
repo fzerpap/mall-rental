@@ -37,6 +37,7 @@ class VentaDiariaController < ApplicationController
 
   end
 
+
   def mf_mall_tiendas
     if !params[:acceso].nil?
       @acceso = params[:acceso]
@@ -46,6 +47,7 @@ class VentaDiariaController < ApplicationController
       @month = Date.new(@year.to_i,@month.to_i,1)
     else
       @acceso = 1
+
     end
   end
 

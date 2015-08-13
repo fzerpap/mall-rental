@@ -1,3 +1,3 @@
-TipoCanonAlquiler.create!([{tipo: 'fijo'}, {tipo: 'variable_venta_bruta'}, {tipo: 'variable_venta_neta'}, {tipo: 'fijo_y_variable_venta_bruta'}, {tipo: 'fijo_y_variable_venta_neta'}, {tipo: 'exento'}])
+TipoCanonAlquiler.create!([{tipo: 'fijo'}, {tipo: 'Variable Venta Bruta'}, {tipo: 'Variable Venta Neta'}, {tipo: 'Fijo&Variable Venta Bruta'}, {tipo: 'Fijo&Variable Venta Neta'}, {tipo: 'Exento'}])
 
 puts "#---- TIPO CANONS DE ALQUILER ------#"

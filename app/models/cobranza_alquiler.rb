@@ -30,7 +30,7 @@ class CobranzaAlquiler < ActiveRecord::Base
     return cobranzas
   end
 
-  def self.get_cobranza_mes_xtienda(mall,year,month)
+  def self.get_cobranza_mes_xtiendaBORRAR(mall,year,month)
     cobranzas = Array.new
     tiendas = mall.tiendas
     tiendas.each do |tienda|
@@ -50,7 +50,7 @@ class CobranzaAlquiler < ActiveRecord::Base
     return CobranzaAlquiler.where(tienda_id: tienda_id).sum(:saldo_deudor)
   end
 
-  def self.get_canon_fijo(tienda,anio,mes)
+  def self.get_canon_fijoBORRAR(tienda,anio,mes)
     cobranza = CobranzaAlquiler.find_by('anio_alquiler = ? AND mes_alquiler = ? AND tienda_id = ?', anio,mes,tienda.id)
     if !cobranza.nil?
       return cobranza.monto_canon_fijo
@@ -60,7 +60,7 @@ class CobranzaAlquiler < ActiveRecord::Base
 
   end
 
-  def self.get_canon_variable(tienda,anio, mes)
+  def self.get_canon_variableBORRAR(tienda,anio, mes)
     cobranza = CobranzaAlquiler.find_by('anio_alquiler = ? AND mes_alquiler = ? AND tienda_id = ?', anio,mes,tienda.id)
     if !cobranza.nil?
       return cobranza.monto_canon_variable
@@ -97,7 +97,26 @@ class CobranzaAlquiler < ActiveRecord::Base
     return monto
   end
 
-  def self.get_cobranza_xmes(mall,year)
+  def self.get_cobranza_mes_xtienda(mall,year,month)
+    ids_tiendas = mall.tiendas.pluck(:id)
+    where(tienda_id: ids_tiendas,anio_alquiler: year, mes_alquiler: month)
+  end
+
+  def self.get_total_cobranza_mes(mall,year,month)
+    ids_tiendas = mall.tiendas.pluck(:id)
+    select("sum(monto_canon_fijo) as monto_canon_fijo,sum(monto_canon_variable) as monto_canon_variable,
+    sum(monto_alquiler) as monto_alquiler,sum(saldo_deudor) as saldo_deudor")
+    .where(tienda_id: ids_tiendas,anio_alquiler: year,mes_alquiler: month)
+  end
+
+  def self.get_total_cobranzas_anio(mall,year)
+    ids_tiendas = mall.tiendas.pluck(:id)
+    select("sum(monto_canon_fijo) as monto_canon_fijo,sum(monto_canon_variable) as monto_canon_variable,
+    sum(monto_alquiler) as monto_alquiler,sum(saldo_deudor) as saldo_deudor,sum(monto_alquiler_usd) as monto_alquiler_usd")
+    .where(tienda_id: ids_tiendas,anio_alquiler: year)
+  end
+
+  def self.get_cobranza_xmesBORRAR(mall,year)
     today = Time.now
     if today.strftime("%Y") == year
       mes_fin = today.strftime("%-m")
@@ -151,51 +170,17 @@ class CobranzaAlquiler < ActiveRecord::Base
     return cobranzas
   end
 
-  def self.get_total_cobranzas_xmesBORRAR(mall,year)
-    tiendas_mall = mall.tiendas
-    total_canon_fijo = 0
-    total_canon_variable = 0
-    total_facturado = 0
-    total_pagado = 0
-    total_pagado_usd = 0
-    total_x_cobrar = 0
-    result = false
 
-    tiendas_mall.each do |tienda|
-      total_canon_fijo += CobranzaAlquiler.where('anio_alquiler = ? AND tienda_id = ?', year, tienda.id).sum(:monto_canon_fijo)
-      total_canon_variable += CobranzaAlquiler.where('anio_alquiler = ? AND tienda_id = ?', year, tienda.id).sum(:monto_canon_variable)
-      total_facturado += CobranzaAlquiler.where('anio_alquiler = ? AND tienda_id = ?', year, tienda.id).sum(:monto_alquiler)
-      total_x_cobrar += CobranzaAlquiler.where('anio_alquiler = ? AND tienda_id = ?', year, tienda.id).sum(:saldo_deudor)
-    end
-    total_pagado = (total_facturado - total_x_cobrar)
-    total_pagado_usd = total_pagado.to_f / CambioMoneda.last.cambio_ml_x_usd
-
-    if total_canon_fijo != 0 || total_canon_variable != 0 || total_facturado != 0
-      result = true
-    end
-    hash_totales = Hash.new
-    hash_totales[:total_canon_fijo] = ActionController::Base.helpers.number_to_currency(total_canon_fijo, separator: ',', delimiter: '.', format: "%n %u", unit: "")
-    hash_totales[:total_canon_variable] = ActionController::Base.helpers.number_to_currency(total_canon_variable, separator: ',', delimiter: '.', format: "%n %u", unit: "")
-    hash_totales[:total_facturado] = ActionController::Base.helpers.number_to_currency(total_facturado, separator: ',', delimiter: '.', format: "%n %u", unit: "")
-    hash_totales[:total_x_cobrar] = ActionController::Base.helpers.number_to_currency(total_x_cobrar, separator: ',', delimiter: '.', format: "%n %u", unit: "")
-    hash_totales[:total_pagado] = ActionController::Base.helpers.number_to_currency(total_pagado, separator: ',', delimiter: '.', format: "%n %u", unit: "")
-    hash_totales[:total_pagado_usd] = ActionController::Base.helpers.number_to_currency(total_pagado_usd, separator: ',', delimiter: '.', format: "%n %u", unit: "")
-    hash_totales[:result] = result
-    return hash_totales
-  end
 
   def self.get_cobranzas_xmes(mall,year)
     ids_tiendas = mall.tiendas.pluck(:id)
-    select("mes_alquiler,
-          sum(monto_canon_fijo) as monto_canon_fijo,
-          sum(monto_canon_variable) as monto_canon_variable,
-          sum(monto_alquiler) as monto_alquiler")
-          .where(tienda_id: ids_tiendas, anio_alquiler: year)
-          .group(:mes_alquiler).order(:mes_alquiler)
+    select("mes_alquiler,sum(monto_canon_fijo) as monto_canon_fijo,sum(monto_canon_variable) as monto_canon_variable,
+          sum(monto_alquiler) as monto_alquiler,sum(monto_alquiler_usd) as monto_alquiler_usd,sum(saldo_deudor) as saldo_deudor")
+          .where(tienda_id: ids_tiendas, anio_alquiler: year).group(:mes_alquiler).order(:mes_alquiler)
   end
 
   # Obtiene la gestión de cobranza que incluye: ventas, canon de alquiler, etc
-  def self.get_getion_cobranzaBorrar(mall,year,month)
+  def self.get_getion_cobranzaBORRAR(mall,year,month)
     cobranza = Array.new
     total_canon_fijo = total_canon_variable = total_ventas = 0
     # Obtiene las ventas del mes x tienda
