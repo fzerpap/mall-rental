@@ -21,16 +21,18 @@ class Mall < ActiveRecord::Base
   belongs_to :pai
   has_many :actividad_economicas, dependent: :destroy
   has_many :users
-  # has_many :roles, through: :users
+  has_many :bancos
+  has_many :cuenta_bancaria, through: :bancos, dependent: :destroy
+
   has_many :locals, dependent: :destroy
   has_many :tipo_locals, through: :locals,dependent: :destroy
   has_many :arrendatarios, dependent: :destroy
   has_many :tiendas, through: :locals, dependent: :destroy
   has_many :user_tiendas, through: :tiendas, dependent: :destroy
   has_many :contrato_alquilers, through: :tiendas, dependent: :destroy
-  belongs_to :cuenta_bancarium
+  has_many :calendario_no_laborables
   belongs_to :cambio_moneda
-  belongs_to :calendario_no_laborable
+
 
   has_and_belongs_to_many :roles
   accepts_nested_attributes_for :roles

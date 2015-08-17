@@ -10,11 +10,23 @@
 #  banco_id      :integer
 #  created_at    :datetime
 #  updated_at    :datetime
-#  mall_id       :integer
 #
 
 class CuentaBancarium < ActiveRecord::Base
+
   belongs_to :banco
+  has_one :mall, through: :banco
   has_many :pago_alquilers
-  has_many :malls
+
+  validates :nro_cta, presence: true
+  validates_uniqueness_of :nro_cta, scope: :banco_id, message: 'ya está en uso'
+
+  before_destroy :confirm_presence_of_pagos
+
+  private
+  def confirm_presence_of_ctas_pagos
+    if pago_alquilers.any?
+      return false
+    end
+  end
 end

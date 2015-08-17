@@ -1,13 +1,15 @@
 class NivelMallsController < ApplicationController
   before_action :set_nivel_mall, only: [:show, :edit, :update, :destroy]
-  respond_to :html, :js
+
+  before_action :authenticate_user!
+  load_and_authorize_resource
   before_action :check_user_mall
 
   # GET /nivel_malls
   # GET /nivel_malls.json
   def index
-    @mall = Mall.find(params[:mall_id])
-    @nivel_malls = NivelMall.where(mall_id: params[:mall_id])
+    #@mall = Mall.find(params[:mall_id])
+    @nivel_malls = NivelMall.where(mall_id: current_user.mall.id).order(:nombre)
   end
 
   # GET /nivel_malls/1
@@ -17,7 +19,7 @@ class NivelMallsController < ApplicationController
 
   # GET /nivel_malls/new
   def new
-    @mall = Mall.find(params[:mall_id])
+    @mall = current_user.mall
     @nivel_mall = NivelMall.new
   end
 
@@ -32,7 +34,7 @@ class NivelMallsController < ApplicationController
 
     respond_to do |format|
       if @nivel_mall.save
-        format.html { redirect_to nivel_malls_index_path(nivel_mall_params[:mall_id]), notice: 'Nivel mall fue creado exitosamente.' }
+        format.html { redirect_to nivel_malls_path: 'Nivel mall fue creado exitosamente.' }
         format.json { render :index, status: :created, location: @nivel_mall }
       else
         format.html { render :new }
@@ -44,9 +46,10 @@ class NivelMallsController < ApplicationController
   # PATCH/PUT /nivel_malls/1
   # PATCH/PUT /nivel_malls/1.json
   def update
+    puts "Entró a update Nivel Mall"
     respond_to do |format|
       if @nivel_mall.update(nivel_mall_params)
-        format.html { redirect_to nivel_malls_index_path(nivel_mall_params[:mall_id]), notice: 'Nivel mall fue actualizado exitosamente.' }
+        format.html { redirect_to nivel_malls_path, notice: 'Nivel mall fue actualizado exitosamente.' }
         format.json { render :index, status: :ok, location: @nivel_mall }
       else
         format.html { render :edit }
@@ -58,13 +61,17 @@ class NivelMallsController < ApplicationController
   # DELETE /nivel_malls/1
   # DELETE /nivel_malls/1.json
   def destroy
-    @mall_id = @nivel_mall.mall_id
-    @nivel_mall.destroy
     respond_to do |format|
-      format.html { redirect_to nivel_malls_index_path(@mall_id), notice: 'Nivel mall se elimino correctamente.' }
-      format.json { head :no_content }
+      if @nivel_mall.destroy
+        format.html { redirect_to nivel_malls_path, notice: "El nivel #{@nivel_mall.nombre} eliminado satisfactoriamente"  }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to nivel_malls_path, alert: "El nivel #{@nivel_mall.nombre} no puede ser eliminado porque tiene locales asociados"  }
+        format.json { head :no_content }
+      end
     end
   end
+
 
   def test_ajax
     render :layout => nil

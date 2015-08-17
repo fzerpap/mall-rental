@@ -1,11 +1,5 @@
-#= require dataTables/jquery.dataTables.js
-#= require dataTables/dataTables.bootstrap.js
-#= require dataTables/dataTables.responsive.js
-#= require dataTables/dataTables.tableTools.min.js
-#= require jqGrid/i18n/grid.locale-el.js
-#= require jqGrid/jquery.jqGrid.min.js
-#= require jquery-ui/jquery-ui.min.js
 #= require bootstrapValidator/bootstrapValidator
+
 jQuery(document).ready ->
 
   $('#form_arrendatarios').bootstrapValidator

@@ -12,5 +12,20 @@
 class ActividadEconomica < ActiveRecord::Base
   belongs_to :mall
   has_many :tiendas
+
   validates :nombre, presence: true
+  validates_uniqueness_of :nombre, scope: :mall_id, message: 'ya está en uso'
+
+  before_destroy :confirm_presence_of_tiendas
+
+  def confirm_presence_of_tiendas
+    if tiendas.any?
+      return false
+    end
+  end
+
+  def self.valid_actividad_economicas(user)
+    where(mall_id: user.mall_id)
+  end
+
 end

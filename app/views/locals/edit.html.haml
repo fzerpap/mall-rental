@@ -26,8 +26,6 @@
               #error_explanation
                 %h2
                   = pluralize(@local.errors.count, "error")
-                  prohibited this local from being saved:
-
                 %ul
                   - @local.errors.full_messages.each do |message|
                     %li
@@ -44,7 +42,7 @@
               = f.label :nivel_mall_id, "Ubicacion - Nivel: ", class: 'col-sm-2 control-label'
               .col-sm-10
                 .mostrar
-                  = f.collection_select(:nivel_mall_id, NivelMall.all, :id, :nombre, include_blank: 'Seleccione Nivel Ubicacion')
+                  = f.collection_select(:nivel_mall_id, NivelMall.valid_nivel_malls(current_user), :id, :nombre, include_blank: 'Seleccione Nivel Ubicacion')
                 .oculto
                   = text_field_tag :nivel_mall_new,'', autofocus: true, size: 30, placeholder: 'Escriba el nombre del nuevo nivel'
                   %span.glyphicon.glyphicon-floppy-disk#icon-save-new-nivel

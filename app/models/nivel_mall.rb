@@ -15,6 +15,17 @@ class NivelMall < ActiveRecord::Base
   has_many :locals
   has_many :tiendas, through: :locals
 
+  validates_uniqueness_of :nombre, scope: :mall_id, message: 'ya está en uso'
+
+  before_destroy :confirm_presence_of_locales
+
+  def confirm_presence_of_locales
+    if tiendas.any?
+      return false
+    end
+  end
+
+
   def self.valid_nivel_malls(user)
     return NivelMall.where(mall_id: user.mall_id)
   end

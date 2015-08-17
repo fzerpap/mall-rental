@@ -1,7 +1,7 @@
 <%= form_for(@canon_alquiler) do |f| %>
   <% if @canon_alquiler.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@canon_alquiler.errors.count, "error") %> prohibited this canon_alquiler from being saved:</h2>
+      <h2><%= pluralize(@canon_alquiler.errors.count, "error") %></h2>
 
       <ul>
       <% @canon_alquiler.errors.full_messages.each do |message| %>

@@ -50,19 +50,19 @@ Myapp::Application.routes.draw do
 
   resources :nivel_malls
 
+  resources :actividad_economicas
+
   resources :pais
 
   get 'locals' => 'locals#index', as: :local_index
 
   get 'locals/new' => 'locals#new'
 
-  get 'nivel_malls/index/:mall_id' => 'nivel_malls#index', as: :nivel_malls_index
+  #get 'nivel_malls/index/:mall_id' => 'nivel_malls#index', as: :nivel_malls_index
+  #get 'nivel_malls/new/:mall_id' => 'nivel_malls#new'
 
-  get 'nivel_malls/new/:mall_id' => 'nivel_malls#new'
-
-  get 'actividad_economicas' => 'actividad_economicas#index', as: :actividad_economicas
-
-  get 'actividad_economica' => 'actividad_economicas#show'
+  #get 'actividad_economicas' => 'actividad_economicas#index', as: :actividad_economicas_index
+  #get 'actividad_economica' => 'actividad_economicas#show'
 
   
   resources :tipo_canon_alquilers
@@ -70,8 +70,6 @@ Myapp::Application.routes.draw do
   resources :cambio_monedas
   post 'cambio_monedas/mf_cambio_moneda'
   
-  resources :actividad_economicas
-
   resources :calendario_no_laborables
 
   resources :arrendatarios

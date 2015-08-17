@@ -2,17 +2,15 @@
   .col-lg-10
     %h2
       Editar Nivel:
-      = @nivel_mall.mall.nombre
+      = @actividad_economica.mall.nombre
 
     %ol.breadcrumb
       %li
         = link_to 'Inicio', root_url
       %li
-        = link_to 'Malls Registrados', malls_path
+        = link_to 'Actividades Económicas Registradas', actividad_economicas_path
       %li
-        = link_to 'Niveles Mall Registrados', nivel_malls_path
-      %li
-        Editar Nivel Mall
+        Editar Actividad Económica
 
 .wrapper.wrapper-content
   .row.animated.fadeInRight
@@ -20,15 +18,15 @@
       .ibox.float-e-margins
         .ibox-title
           %h3
-            Editar Nivel Mall
+            Editar Actividad Económica
         .ibox-content
-          = form_for(@nivel_mall, url: {action: :update}, html: {class:"form-horizontal m-t-md", id: "form_edit_nivel_mall"}) do |f|
-            - if @nivel_mall.errors.any?
+          = form_for(@actividad_economica, url: {action: :update}, html: {class:"form-horizontal m-t-md", id: "form_edit_actividad_economica"}) do |f|
+            - if @actividad_economica.errors.any?
               #error_explanation
                 %h2
-                  = pluralize(@nivel_mall.errors.count, "error")
+                  = pluralize(@actividad_economica.errors.count, "error")
                 %ul
-                  - @nivel_mall.errors.full_messages.each do |message|
+                  - @actividad_economica.errors.full_messages.each do |message|
                     %li
                       = message
             .form-group
@@ -36,7 +34,7 @@
               .col-sm-10
                 = f.text_field :nombre, autofocus: true, class: 'form-control'
 
-            = f.hidden_field :mall_id, :value => @nivel_mall.mall.id
+            = f.hidden_field :mall_id, :value => @actividad_economica.mall.id
             .form-group
               .col-sm-3.col-sm-offset-9
                 = f.submit "Actualizar", class: "btn btn-warning btn-block"

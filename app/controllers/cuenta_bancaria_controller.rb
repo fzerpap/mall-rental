@@ -1,11 +1,10 @@
 class CuentaBancariaController < ApplicationController
   before_action :set_cuenta_bancarium, only: [:show, :edit, :update, :destroy]
   before_action :check_user_mall
-  respond_to :html
+
 
   def index
-    @cuenta_bancarias = CuentaBancarium.all
-
+    @cuenta_bancarias = current_user.mall.cuenta_bancaria
   end
 
   def show
@@ -14,7 +13,6 @@ class CuentaBancariaController < ApplicationController
 
   def new
     @cuenta_bancarium = CuentaBancarium.new
-    @mall = current_user.mall
 
   end
 
@@ -24,13 +22,12 @@ class CuentaBancariaController < ApplicationController
 
   def create
     @cuenta_bancarium = CuentaBancarium.new(cuenta_bancarium_params)
-
     respond_to do |format|
       if @cuenta_bancarium.save
         format.html { redirect_to cuenta_bancaria_path, notice: 'Cuenta Bancaria guardada exitosamente.' }
         format.json { render :index, status: :created, location: @cuenta_bancarium }
       else
-        format.html { render :new }
+        format.html {render :new }
         format.json { render json: @cuenta_bancarium.errors, status: :unprocessable_entity }
       end
     end
@@ -47,19 +44,18 @@ class CuentaBancariaController < ApplicationController
         format.json { render json: @cuenta_bancarium.errors, status: :unprocessable_entity }
       end
     end
-
-
-
-
   end
 
   def destroy
-    @cuenta_bancarium.destroy
     respond_to do |format|
-      format.html { redirect_to cuenta_bancarium_url, notice: 'Cuenta Bancaria se ha eliminado exitosamente.' }
-      format.json { head :no_content }
+      if @cuenta_bancarium.destroy
+        format.html { redirect_to cuenta_bancarium_index_path, notice: 'Cuenta Bancaria eliminada exitosamente' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to cuenta_bancarium_index_path, alert: 'La Cuenta Bancaria no pueder ser eliminada porque tiene depósitos asociadas' }
+        format.json { head :no_content }
+      end
     end
-
   end
 
   private
@@ -68,6 +64,6 @@ class CuentaBancariaController < ApplicationController
     end
 
     def cuenta_bancarium_params
-      params.require(:cuenta_bancarium).permit(:nro_cta, :tipo_cuenta, :beneficiario, :doc_identidad, :banco_id, :mall_id)
+      params.require(:cuenta_bancarium).permit(:nro_cta, :tipo_cuenta, :beneficiario, :doc_identidad, :banco_id)
     end
 end

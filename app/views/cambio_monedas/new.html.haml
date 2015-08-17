@@ -24,7 +24,6 @@
               #error_explanation
                 %h2
                   = pluralize(@cambio_moneda.errors.count, "error")
-                  prohibited this local from being saved:
                 %ul
                   - @cambio_moneda.errors.full_messages.each do |message|
                     %li

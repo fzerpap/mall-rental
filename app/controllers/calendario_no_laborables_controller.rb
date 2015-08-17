@@ -6,7 +6,7 @@ class CalendarioNoLaborablesController < ApplicationController
   # GET /calendario_no_laborables.json
   def index
     @mall = current_user.mall
-    @calendario_no_laborables = CalendarioNoLaborable.all
+    @calendario_no_laborables = @mall.calendario_no_laborables
   end
 
   # GET /calendario_no_laborables/1

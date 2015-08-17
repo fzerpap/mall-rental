@@ -55,6 +55,16 @@
           = link_to users_index_path do
             %i.fa.fa-database
             %span.nav-label Administradores Mall
+      - if (can? :index, ActividadEconomica) && current_user.mall_id.present?
+        %li
+          = link_to actividad_economicas_path do
+            %i.fa.fa-bars
+            %span.nav-label Actividades Económicas
+      - if (can? :index, NivelMall) && current_user.mall_id.present?
+        %li
+          = link_to nivel_malls_path do
+            %i.fa.fa-bars
+            %span.nav-label Niveles del Mall
       - if (can? :index, Local) && current_user.mall_id.present?
         %li
           = link_to local_index_path do

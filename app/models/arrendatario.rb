@@ -24,7 +24,7 @@ class Arrendatario < ActiveRecord::Base
   before_destroy :confirm_presence_of_tiendas
 
   validates :nombre, :rif, :direccion, :telefono, :telefono_rl, :nombre_rl, :cedula_rl, :mall_id, presence: true
-  validates :nombre, uniqueness: true
+  validates_uniqueness_of :nombre, scope: :mall_id, message: 'ya está en uso'
 
   private
   def confirm_presence_of_tiendas

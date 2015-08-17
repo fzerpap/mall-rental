@@ -1,7 +1,7 @@
 <%= form_for(@actividad_economica) do |f| %>
   <% if @actividad_economica.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@actividad_economica.errors.count, "error") %> prohibited this actividad_economica from being saved:</h2>
+      <h2><%= pluralize(@actividad_economica.errors.count, "error") %> </h2>
 
       <ul>
       <% @actividad_economica.errors.full_messages.each do |message| %>

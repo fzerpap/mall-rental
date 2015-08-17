@@ -1,15 +1,17 @@
 class ActividadEconomicasController < ApplicationController
   before_action :set_actividad_economica, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
+  load_and_authorize_resource
+  before_action :check_user_mall
 
   # GET /actividad_economicas
   # GET /actividad_economicas.json
   def index
-    @actividad_economicas = ActividadEconomica.where(mall_id: current_user.mall.id)
 
-    if @actividad_economicas.blank?
-      redirect_to controller: 'actividad_economicas', action: 'new'
-    end
+    @actividad_economicas = ActividadEconomica.where(mall_id: current_user.mall.id).order(:nombre)
+
   end
+
 
   # GET /actividad_economicas/1
   # GET /actividad_economicas/1.json
@@ -46,7 +48,7 @@ class ActividadEconomicasController < ApplicationController
   def update
     respond_to do |format|
       if @actividad_economica.update(actividad_economica_params)
-        format.html { redirect_to actividad_economica_path, notice: 'Actividad economica fue actualizada exitosamente.' }
+        format.html { redirect_to actividad_economicas_path, notice: 'Actividad económica fue actualizada exitosamente.' }
         format.json { render :index, status: :ok, location: @actividad_economica }
       else
         format.html { render :edit }
@@ -58,13 +60,16 @@ class ActividadEconomicasController < ApplicationController
   # DELETE /actividad_economicas/1
   # DELETE /actividad_economicas/1.json
   def destroy
-    @actividad_economica.destroy
     respond_to do |format|
-      format.html { redirect_to actividad_economicas_url, notice: 'Actividad economica fue eliminada exiotosamente.' }
-      format.json { head :no_content }
+      if @actividad_economica.destroy
+        format.html { redirect_to actividad_economicas_path, notice: "Activdiad #{@actividad_economica.nombre} eliminada satisfactoriamente"  }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to actividad_economicas_path, alert: "La actividad #{@actividad_economica.nombre} no puede ser eliminada, porque tiene tiendas asociadas"  }
+        format.json { head :no_content }
+      end
     end
   end
-
 
 
   private

@@ -10,7 +10,7 @@
       %li
         = link_to 'Malls Registrados', malls_path
       %li
-        = link_to 'Niveles Mall Registrados', nivel_malls_index_path(@mall)
+        = link_to 'Niveles Mall Registrados', nivel_malls_path
       %li
         Registro de Nivel Mall
 
@@ -27,8 +27,6 @@
               #error_explanation
                 %h2
                   = pluralize(@nivel_mall.errors.count, "error")
-                  prohibited this local from being saved:
-
                 %ul
                   - @nivel_mall.errors.full_messages.each do |message|
                     %li

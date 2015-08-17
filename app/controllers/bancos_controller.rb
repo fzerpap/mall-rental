@@ -3,8 +3,10 @@ class BancosController < ApplicationController
 
   respond_to :html
 
+  banco = ""
   def index
-    @bancos = Banco.all
+    mall = current_user.mall
+    @bancos = mall.bancos
   end
 
   def show
@@ -13,21 +15,22 @@ class BancosController < ApplicationController
 
   def new
     @banco = Banco.new
-
+    @mall = current_user.mall
   end
 
   def edit
+    banco = params[:nombre]
   end
 
   def create
     @banco = Banco.new(banco_params)
     respond_to do |format|
-      if @banco.save
+       if @banco.save
         format.html { redirect_to bancos_path, notice: 'Banco fue guardado satisfactoriamente.' }
         format.json { render :index, status: :created, location: @banco }
       else
         format.html { render :new }
-        format.json { render json: @banco.errors, status: :unprocessable_entity }
+        format.json { render json: @cliente.errors, status: :unprocessable_entity }
       end
     end
 
@@ -46,12 +49,17 @@ class BancosController < ApplicationController
   end
 
   def destroy
-    @banco.destroy
     respond_to do |format|
-      format.html { redirect_to bancos_url, notice: 'Banco se elimino correctamente.' }
-      format.json { head :no_content }
+      if @banco.destroy
+        format.html { redirect_to banco_index_path, notice: 'Banco eliminado exitosamente' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to banco_index_path, alert: 'El banco no pueder ser eliminado porque tiene cuentas asociadas' }
+        format.json { head :no_content }
+      end
     end
   end
+
 
   private
     def set_banco
@@ -59,6 +67,7 @@ class BancosController < ApplicationController
     end
 
     def banco_params
-      params.require(:banco).permit(:nombre)
+      params.require(:banco).permit(:nombre,:mall_id)
     end
+
 end

@@ -15,7 +15,7 @@ class Pai < ActiveRecord::Base
   belongs_to :idioma
   belongs_to :moneda
   validates :nombre, presence: true
-  validates :nombre, uniqueness: true
+  validates_uniqueness_of :nombre, message: "ya está en uso"
 
   before_destroy :confirm_presence_of_pais
 

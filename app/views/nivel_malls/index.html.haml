@@ -1,7 +1,8 @@
 .row.wrapper.border-bottom.white-bg.page-heading
   .col-lg-10
     %h2
-      Malls Registrados
+      Niveles del
+      = current_user.mall.abreviado
     %ol.breadcrumb
       %li
         = link_to 'Inicio', root_url

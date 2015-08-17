@@ -25,8 +25,6 @@
               #error_explanation
                 %h2
                   = pluralize(@cuenta_bancarium.errors.count, "error")
-                  prohibited this local from being saved:
-
                 %ul
                   - @cuenta_bancarium.errors.full_messages.each do |message|
                     %li
@@ -50,7 +48,7 @@
             .form-group
               = f.label :banco, "Banco: ", class: 'col-sm-2 control-label'
               .col-sm-10
-                = f.select :banco_id, options_from_collection_for_select(Banco.all, :id, :nombre, selected: f.object.banco_id || nil), {include_blank: 'Seleccione un Banco'}, class: 'form-control'
+                = f.select :banco_id, options_from_collection_for_select(Banco.valid_bancos(current_user), :id, :nombre, selected: f.object.banco_id || nil), {include_blank: 'Seleccione un Banco'}, class: 'form-control'
             .form-group
               .col-sm-3.col-sm-offset-9
                 = f.hidden_field :mall_id, :value => @mall.id

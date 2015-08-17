@@ -45,6 +45,8 @@ jQuery(document).ready ->
         validators:
           notEmpty:
             message: 'El tipo de local es obligatorio'
+          numeric:
+            message: 'El tipo de local es necesario guardarlo'
       "local[tipo_estado_local]":
         validators:
           notEmpty:
@@ -93,9 +95,9 @@ jQuery(document).ready ->
           notEmpty:
             message: 'El estado del local es obligatorio'
 
-$("#local_nivel_mall_id").append("<option value='999'>Nuevo...</option>")
+
 $("#local_nivel_mall_id").on "change", ->
-  if (this.value) == '999'
+  if (this.value) == '-1'
     $(".mostrar").css "display","none"
     $(".oculto").css "display","block"
     $("#validacion_nombre_nivel").css "display","none"
@@ -127,7 +129,7 @@ $("#icon-save-new-nivel").on "click", ->
           $(".mostrar").css "display","block"
           $(".oculto").css "display","none"
           $.blockUI({
-            message: 'Ubicacion Nivel se guardado exitosamente',
+            message: 'Ubicacion Nivel fue guardado exitosamente',
             timeout: 2000,
           });
         error: (data)->

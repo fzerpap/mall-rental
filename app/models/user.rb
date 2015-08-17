@@ -42,8 +42,8 @@ class User < ActiveRecord::Base
   has_one :user_tienda, dependent: :destroy
   has_one :tienda, through: :user_tienda
 
-  validates :username, presence: {message: 'es obligatorio'},
-            uniqueness: {message: 'ya en uso.'}
+  validates :username, presence: {message: 'es obligatorio'}
+  validates_uniqueness_of :username, scope: :mall_id, message: "ya está en uso"
   validates :email, presence: {message: 'Email Obligatorio'}
   validates :name, presence: {message: 'Nombre Obligatorio'}
   validates :role_id, presence: {message: 'Rol Obligatorio'}

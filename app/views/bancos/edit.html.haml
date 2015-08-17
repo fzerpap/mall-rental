@@ -24,11 +24,15 @@
               #error_explanation
                 %h2
                   = pluralize(@banco.errors.count, "error")
-                  prohibited this local from being saved:
                 %ul
                   - @banco.errors.full_messages.each do |message|
                     %li
                       = message
+            .form-group
+              = f.label :mall, "Mall: ", class: 'col-sm-2 control-label'
+              .col-sm-10
+                = f.text_field :mall, :value => current_user.mall.nombre, autofocus: true, class: 'form-control',  readonly: 'readonly'
+            = f.hidden_field :mall_id, :value => current_user.mall.id
             .form-group
               = f.label :nombre, "Nombre: ", class: 'col-sm-2 control-label'
               .col-sm-10

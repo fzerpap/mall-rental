@@ -30,9 +30,11 @@ class Local < ActiveRecord::Base
   validates :tipo_local_id, :nro_local, :area_planta, :area_terraza, :area_mezanina, presence: true
   validates :area_planta, :area_terraza, :area_mezanina, numericality: true
   validates :tipo_estado_local, presence: true
-  validates :nro_local, uniqueness: true
 
-  mount_uploader :foto, AvatarUploader
+  validates :nivel_mall_id, numericality: { greater_than_or_equal_to: 1 }
+  validates_uniqueness_of :nro_local, scope: :mall_id, message: 'ya está en uso'
+
+   mount_uploader :foto, AvatarUploader
 
   enum tipo_estado_local: [:Disponible, :Alquilado, :En_Reparacion, :Vendido]
 

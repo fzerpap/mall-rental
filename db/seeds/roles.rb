@@ -1,11 +1,14 @@
-#--- SEEDING ROLES, RECUERDE PRIMERO SEEDEAR LOS TIPOS DE SERVICIO ---#
+puts "INICIALIZANDO LOS TIPOS DE SERVICIOS"
+TipoServicio.create!([{tipo: 'Mall'}, {tipo: 'Mall Rental'}, {tipo: 'Mall Condominio'}])
 
 mall = TipoServicio.find_by(tipo: 'Mall')
 mall_rental = TipoServicio.find_by(tipo: 'Mall Rental')
 mall_condominio = TipoServicio.find_by(tipo: 'Mall Condominio')
 
+puts "INICIALIZANDO LOS ROLES"
+
 #SUPER ADMINISTRADOR DEL SISTEMA
-admin_role = Role.create!(name: 'Super Usuario MallRental', permissions: Permission.where(name: 'manage'), role_type: Role.role_types[:administrador_sistema], tipo_servicio: mall)
+admin_role = Role.create!(name: 'Super Usuario Sistema MallRental', permissions: Permission.where(name: 'manage'), role_type: Role.role_types[:administrador_sistema], tipo_servicio: mall)
 
 
 # ROLES DE MALL

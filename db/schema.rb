@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150726013644) do
+ActiveRecord::Schema.define(version: 20150814162441) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,7 +46,10 @@ ActiveRecord::Schema.define(version: 20150726013644) do
     t.string   "nombre"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "mall_id"
   end
+
+  add_index "bancos", ["mall_id"], name: "index_bancos_on_mall_id", using: :btree
 
   create_table "calendario_no_laborables", force: true do |t|
     t.date     "fecha"
@@ -169,11 +172,9 @@ ActiveRecord::Schema.define(version: 20150726013644) do
     t.integer  "banco_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "mall_id"
   end
 
   add_index "cuenta_bancaria", ["banco_id"], name: "index_cuenta_bancaria_on_banco_id", using: :btree
-  add_index "cuenta_bancaria", ["mall_id"], name: "index_cuenta_bancaria_on_mall_id", using: :btree
 
   create_table "detalle_pago_alquilers", force: true do |t|
     t.float    "monto",               default: 0.0
@@ -250,12 +251,10 @@ ActiveRecord::Schema.define(version: 20150726013644) do
     t.string   "direccion_fiscal"
     t.string   "telefono"
     t.integer  "pai_id"
-    t.integer  "cuenta_bancarium_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "malls", ["cuenta_bancarium_id"], name: "index_malls_on_cuenta_bancarium_id", using: :btree
   add_index "malls", ["pai_id"], name: "index_malls_on_pai_id", using: :btree
 
   create_table "malls_roles", id: false, force: true do |t|

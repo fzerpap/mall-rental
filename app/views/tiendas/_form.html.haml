@@ -27,7 +27,8 @@
             = f.label :actividad_economica_id, class: 'col-sm-2 control-label' do
               Actividad Económica:
             .col-sm-10
-              = f.select :actividad_economica_id, content_tag(:option,'Nueva Actividad Económica...',:value=>"nueva_actividad_economica") + options_from_collection_for_select(ActividadEconomica.all, :id, :nombre, selected: f.object.actividad_economica_id || nil), {include_blank: 'Seleccione una Actividad Económica'}, {class: 'form-control', id: 'select_actividad_economica_tienda'}
+              = f.collection_select(:actividad_economica_id, ActividadEconomica.valid_actividad_economicas(current_user), :id, :nombre, {include_blank: 'Seleccione Actividad Económica'}, {class: 'form-control', id: 'select_actividad_economica_tienda'})
+
           %div#add_actividad_economica_select
             .form-group
               = label_tag :nueva_actividad_economica, class: 'col-sm-3 control-label' do
@@ -78,7 +79,7 @@
                 Fin del Contrato:
               .col-sm-9.form-inline
                 = c.date_select :fecha_fin, {default: "31/12/#{Date.today.year}".to_date}, class: 'form-control'
-            %div#canon_fijo{style: (c.object.tipo_canon_alquiler.id == 1 || c.object.tipo_canon_alquiler.id == 4 || c.object.tipo_canon_alquiler.id == 5) ? '' : 'display:none'}
+            %div#canon_fijo{ style: (c.object.tipo_canon_alquiler_id == 1 || c.object.tipo_canon_alquiler_id == 4 || c.object.tipo_canon_alquiler_id == 5) ? "" : "display: none" }
               .form-group
                 = c.label :canon_fijo_ml, class: 'col-sm-3 control-label' do
                   Canon Fijo (ML):
@@ -93,7 +94,7 @@
                   = c.text_field :canon_fijo_usd, readonly: true,  class: 'form-control numeric_contrato_alquiler canon_fijo_usd campo_numerico'
                 .col-sm-1.text-left
                   %span $
-            %div#canon_porcentaje{style: (c.object.tipo_canon_alquiler.id >= 2 && c.object.tipo_canon_alquiler.id <= 5) ? '' : 'display:none'}
+            %div#canon_porcentaje{ style: (c.object.tipo_canon_alquiler_id == 2 || c.object.tipo_canon_alquiler_id == 3 || c.object.tipo_canon_alquiler_id == 4 || c.object.tipo_canon_alquiler_id == 5) ? "" : "display: none" }
               .form-group
                 = c.label :porc_canon_ventas, class: 'col-sm-3 control-label' do
                   \% Canon por Ventas:

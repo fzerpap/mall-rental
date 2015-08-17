@@ -35,6 +35,34 @@ class LocalsController < ApplicationController
 
   # POST /locals
   # POST /locals.json
+  def createBORRAR
+
+    puts "Entro a create de local otra vez"
+    puts params[:local][:nivel_mall_id]
+
+    @local = Local.new(local_params)
+    respond_to do |format|
+      if !params[:local][:nivel_mall_id] == -1
+        if @local.save
+          puts "entró a salvar el local"
+          format.html { redirect_to local_index_path, notice: 'Local fue creado satisfactoriamente.' }
+          format.json { render :index, status: :created, location: @local }
+        else
+          puts "no entró a salvar el local"
+
+          @local.errors.add(:name,"Debe guardarse cuando se ingresa uno nuevo")
+          format.html { render :new }
+          format.json { render json: @local.errors, status: :unprocessable_entity }
+        end
+      else
+        puts "el nivel mall = -1"
+
+        format.html { render :new, message: "La Ubicación - Nivel ingresada no fue salvada"}
+        format.json { render json: @local.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def create
     @local = Local.new(local_params)
     respond_to do |format|
