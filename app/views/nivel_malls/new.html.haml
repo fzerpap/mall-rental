@@ -1,14 +1,12 @@
 .row.wrapper.border-bottom.white-bg.page-heading
   .col-lg-10
     %h2
-      Nuevo Nivel:
-      = @mall.nombre
+      - current_user.mall
+      Nueva Nivell Mall
 
     %ol.breadcrumb
       %li
         = link_to 'Inicio', root_url
-      %li
-        = link_to 'Malls Registrados', malls_path
       %li
         = link_to 'Niveles Mall Registrados', nivel_malls_path
       %li
@@ -36,7 +34,7 @@
               .col-sm-10
                 = f.text_field :nombre, autofocus: true, class: 'form-control'
 
-            = f.hidden_field :mall_id, :value => @mall.id
+            = f.hidden_field :mall_id, :value => @current_user.mall.id
             .form-group
               .col-sm-3.col-sm-offset-9
                 = f.submit "Guardar", class: "btn btn-warning btn-block"

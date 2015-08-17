@@ -8,7 +8,7 @@ class NivelMallsController < ApplicationController
   # GET /nivel_malls
   # GET /nivel_malls.json
   def index
-    #@mall = Mall.find(params[:mall_id])
+    @mall = current_user.mall
     @nivel_malls = NivelMall.where(mall_id: current_user.mall.id).order(:nombre)
   end
 
