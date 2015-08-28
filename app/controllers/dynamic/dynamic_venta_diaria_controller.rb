@@ -1,6 +1,8 @@
 module Dynamic
   class DynamicVentaDiariaController < ApplicationController
+
     respond_to :json
+
     def venta
       year = params[:year]
       month = params[:month]
@@ -20,11 +22,11 @@ module Dynamic
       ventas_mes = set_grid_ventas_mes(tienda,year,month,dias_mes)
       cant_dias_no_lab = CalendarioNoLaborable.cantidad_dias_no_lab(tienda.mall.id,month,year)
 
-      suma = VentaMensual.suma_venta_mes(tienda.id,year,month)
+      monto_bruto = VentaMensual.get_montos_venta_mes(tienda_id,year,month)[:monto_bruto]
 
       cantidad_ventas_mes = VentaDiarium.cantidad_ventas_mes(month,year,tienda)
 
-      render json: [ventas: ventas_mes, result: true, suma: suma, tienda_id: tienda_id, dias_no_lab: cant_dias_no_lab, cantidad_ventas_mes: cantidad_ventas_mes, dias_mes: dias_mes, mes_actual:mes_actual]
+      render json: [ventas: ventas_mes, result: true, monto_bruto: monto_bruto, tienda_id: tienda_id, dias_no_lab: cant_dias_no_lab, cantidad_ventas_mes: cantidad_ventas_mes, dias_mes: dias_mes, mes_actual:mes_actual]
     end
 
     def guardar_ventas

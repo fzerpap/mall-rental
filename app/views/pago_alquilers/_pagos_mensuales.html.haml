@@ -14,11 +14,11 @@
       %td{ :class => 'text-right' }
         = ActionController::Base.helpers.number_to_currency(monto_pagado, separator: ',', delimiter: '.', format: "%n %u", unit: "")
       %td{ :class => 'text-right' }
-        = ActionController::Base.helpers.number_to_currency(monto_pagado * CambioMoneda.last.cambio_ml_x_usd, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+        = ActionController::Base.helpers.number_to_currency(monto_pagado / CambioMoneda.last.cambio_ml_x_usd, separator: ',', delimiter: '.', format: "%n %u", unit: "")
       %td{ :class => 'text-right' }
         = ActionController::Base.helpers.number_to_currency(cobranza.saldo_deudor, separator: ',', delimiter: '.', format: "%n %u", unit: "")
       %td.text-center
-        = link_to ventas_mes_tienda_path(month: cobranza[:num_mes]) do
+        = link_to pago_alquilers_path(year: Time.now.year,month: cobranza.mes_alquiler) do
           %i.fa.fa-search
           Ver Detalles de Pagos
   %tr
@@ -33,7 +33,7 @@
     %td{ :class => 'text-right' }
       = ActionController::Base.helpers.number_to_currency(total_pagado, separator: ',', delimiter: '.', format: "%n %u", unit: "")
     %td{ :class => 'text-right' }
-      = ActionController::Base.helpers.number_to_currency(total_pagado * CambioMoneda.last.cambio_ml_x_usd, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+      = ActionController::Base.helpers.number_to_currency(total_pagado / CambioMoneda.last.cambio_ml_x_usd, separator: ',', delimiter: '.', format: "%n %u", unit: "")
     %td{ :class => 'text-right' }
       = ActionController::Base.helpers.number_to_currency(@totales[0][:saldo_deudor], separator: ',', delimiter: '.', format: "%n %u", unit: "")
 - else

@@ -5,7 +5,7 @@ module Dynamic
     def auditoria
       year = params[:year]
       month = params[:month]
-      cob = CobranzaAlquiler.get_getion_cobranza(current_user.mall,year,month)
+      cob = CobranzaAlquiler.get_gestion_cobranza(current_user.mall,year,month)
       #obj = obj
       array_tienda = Array.new
       cant = cob.count()-1

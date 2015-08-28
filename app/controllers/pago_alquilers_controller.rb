@@ -41,7 +41,6 @@ class PagoAlquilersController < ApplicationController
   end
 
   def index
-
     if params[:year].nil?
       today = Time.now
       month = today.strftime("%-m").to_i

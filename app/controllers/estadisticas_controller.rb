@@ -9,7 +9,14 @@ class EstadisticasController < ApplicationController
   end
 
   def filtro_intermensuales
+    # Obtiene las estadísticas
     @estadisticas = Tienda.estadisticas(current_user.mall, params[:fecha_init], params[:fecha_end], params[:nivel_mall_id], params[:actividad_economica_id], params[:tipo_local_id], params[:criterio])
+
+    # Obtiene los totales de las estadísticas
+    keys = [:venta_diaria, :canon_fijo_ml, :porc_canon, :total]
+    @totales = @estadisticas.map { |h| h.values_at(*keys) }.inject { |a, v| a.zip(v).map(&:sum) }
+    @totales << @totales[3] / CambioMoneda.last.cambio_ml_x_usd
+
     render partial: 'table_intermensuales_vxa'
   end
 

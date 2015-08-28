@@ -9,17 +9,35 @@
                 %thead
                   %tr
                     %td Criterio
-                    %td Monto en Ventas
-                    %td Ingresos por Canón Fijo
-                    %td Ingresos por Porcentaje de Ventas
-                    %td Total de Ingresos
-                    %td Total de Ingresos (USD $)
+                    %td Monto Ventas
+                    %td Ingresos Canon Fijo
+                    %td Ingresos Canon Variable
+                    %td Total Ingresos
+                    %td Total Ingresos (USD)
                 %tbody
                   - @estadisticas.each do |estadistica|
                     %tr
                       %td= estadistica[:criterio]
-                      %td= number_with_delimiter(estadistica[:venta_diaria]) || '0'
-                      %td= number_with_delimiter(estadistica[:canon_fijo_ml]) || '0'
-                      %td= number_with_delimiter(estadistica[:porc_canon]) || '0'
-                      %td= number_with_delimiter(estadistica[:total]) || 0
-                      %td= number_with_delimiter(estadistica[:total] * CambioMoneda.last.cambio_ml_x_usd)
+                      %td{ :class => 'text-right' }
+                        = ActionController::Base.helpers.number_to_currency(estadistica[:venta_diaria], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+                      %td{ :class => 'text-right' }
+                        = ActionController::Base.helpers.number_to_currency(estadistica[:canon_fijo_ml], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+                      %td{ :class => 'text-right' }
+                        = ActionController::Base.helpers.number_to_currency(estadistica[:porc_canon], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+                      %td{ :class => 'text-right' }
+                        = ActionController::Base.helpers.number_to_currency(estadistica[:total], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+                      %td{ :class => 'text-right' }
+                        = ActionController::Base.helpers.number_to_currency(estadistica[:total]/ CambioMoneda.last.cambio_ml_x_usd, separator: ',', delimiter: '.', format: "%n %u", unit: "")
+                  %tr
+                    %td.text-right TOTAL
+                    %td{ :class => 'text-right' }
+                      = ActionController::Base.helpers.number_to_currency(@totales[0], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+                    %td{ :class => 'text-right' }
+                      = ActionController::Base.helpers.number_to_currency(@totales[1], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+                    %td{ :class => 'text-right' }
+                      = ActionController::Base.helpers.number_to_currency(@totales[2], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+                    %td{ :class => 'text-right' }
+                      = ActionController::Base.helpers.number_to_currency(@totales[3], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+                    %td{ :class => 'text-right' }
+                      = ActionController::Base.helpers.number_to_currency(@totales[4], separator: ',', delimiter: '.', format: "%n %u", unit: "")
+

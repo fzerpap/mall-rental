@@ -31,8 +31,8 @@ $(".actualizar_ventas").on "change", ->
       tienda_id: $("#tienda_id").val()
     before_send: $.blockUI({message: 'Por favor espere...'})
     success: (data) ->
-      suma = data[0]['suma']
-      $("#total_ventas").val(suma)
+      monto_bruto = data[0]['monto_bruto']
+      $("#total_ventas").val(monto_bruto)
       $("#total_ventas").number(true,2,',','.')
       $("#tbody_venta_bruta").empty()
       @dias_no_lab = data[0]['dias_no_lab']
@@ -308,16 +308,7 @@ $("#btn_cancelar_venta").on "click", ->
   if $(".campo_editar").length > 0
     if confirm('¿Está seguro de cancelar los cambios?')
       $(".actualizar_ventas").change()
-#  $( "#dialog-confirm").dialog
-#    resizable: false,
-#    height:140,
-#    modal: true,
-#    buttons: {
-#      "Delete all items": ->
-#        $( this ).dialog("close")
-#    },
-#    Cancel: ->
-#      $(this).dialog( "close" );
+
 
 $(".actualizar_auditoria_ventas").on "change", ->
   console.log(".actualizar_auditoria_ventas")

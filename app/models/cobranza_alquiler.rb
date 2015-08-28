@@ -218,7 +218,7 @@ class CobranzaAlquiler < ActiveRecord::Base
     return cobranza
   end
 
-  def self.get_getion_cobranza(mall,year,month)
+  def self.get_gestion_cobranza(mall,year,month)
     cobranza = Array.new
     total_canon_fijo = total_canon_variable = total_canon = total_ventas = 0
     # Obtiene las ventas del mes x tienda
@@ -241,10 +241,10 @@ class CobranzaAlquiler < ActiveRecord::Base
       total_canon_fijo     += canon_fijo
       total_canon_variable += canon_variable
       total_canon          += canon_fijo + canon_variable
-      total_ventas         += venta.monto
+      total_ventas         += venta.monto_bruto
 
       hash_cobranza = {tienda: venta.tienda_id,tipo_canon: contrato_alquiler.tipo_canon_alquiler.tipo,
-                       editable: venta.editable,venta_mes: venta.monto,venta_neta: venta.monto_neto,
+                       editable: venta.editable,venta_mes: venta.monto_bruto,venta_neta: venta.monto_neto,
                        venta_bruta: venta.monto_bruto,canon_fijo: canon_fijo,canon_variable: canon_variable,
                        canon_alquiler: canon_fijo + canon_variable,tiene_cobranza: tiene_cobranza,
                        total_ventas: total_ventas,total_canon_fijo: total_canon_fijo,
