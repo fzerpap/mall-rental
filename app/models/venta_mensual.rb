@@ -45,7 +45,7 @@ class VentaMensual < ActiveRecord::Base
     end
   end
 
-  def self.suma_venta_mesBORRAR(tienda_id,year,month)
+  def self.suma_venta_mes(tienda_id,year,month)
     venta_mensual = get_venta_mes_tienda(tienda_id,year,month)
     if venta_mensual.nil?
       return 0
@@ -54,7 +54,7 @@ class VentaMensual < ActiveRecord::Base
     end
   end
 
-  def self.monto_bruto_mesBORRAR(tienda,year,month)
+  def self.monto_bruto_mes(tienda,year,month)
     venta_mensual = get_venta_mes_tienda(tienda,year,month)
     if venta_mensual.nil?
       return 0
@@ -63,7 +63,7 @@ class VentaMensual < ActiveRecord::Base
     end
   end
 
-  def self.monto_neto_mesBORRAR(tienda,year,month)
+  def self.monto_neto_mes(tienda,year,month)
     venta_mensual = get_venta_mes_tienda(tienda,year,month)
     if venta_mensual.nil?
       return 0
@@ -72,7 +72,7 @@ class VentaMensual < ActiveRecord::Base
     end
   end
 
-   def self.suma_monto_brutoBORRAR(mall,year)
+   def self.suma_monto_bruto(mall,year)
     suma = 0
     mall.tiendas.each do |tienda|
       suma += VentaMensual.where("tienda_id = ? AND anio = ?", tienda, year).sum(:monto_bruto)
@@ -81,7 +81,7 @@ class VentaMensual < ActiveRecord::Base
     return suma
   end
 
-  def self.suma_notas_credito_mesBORRAR(tienda,year,month)
+  def self.suma_notas_credito_mes(tienda,year,month)
     venta_mensual = get_venta_mes_tienda(tienda,year,month)
     if venta_mensual.nil?
       return 0
@@ -90,7 +90,7 @@ class VentaMensual < ActiveRecord::Base
     end
   end
 
-  def self.suma_costo_venta_mesBORRAR(tienda,year,month)
+  def self.suma_costo_venta_mes(tienda,year,month)
     venta_mensual = get_venta_mes_tienda(tienda,year,month)
     if venta_mensual.nil?
       return 0

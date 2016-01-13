@@ -1,20 +1,3 @@
-# == Schema Information
-#
-# Table name: malls
-#
-#  id                  :integer          not null, primary key
-#  nombre              :string(255)
-#  abreviado           :string(255)
-#  rif                 :string(255)
-#  direccion_fiscal    :string(255)
-#  telefono            :string(255)
-#  pai_id              :integer
-#  cuenta_bancarium_id :integer
-#  created_at          :datetime
-#  updated_at          :datetime
-#
-
-
 
 class Mall < ActiveRecord::Base
   has_many :nivel_malls, dependent: :destroy
@@ -31,15 +14,13 @@ class Mall < ActiveRecord::Base
   has_many :user_tiendas, through: :tiendas, dependent: :destroy
   has_many :contrato_alquilers, through: :tiendas, dependent: :destroy
   has_many :calendario_no_laborables
-  belongs_to :cambio_moneda
-
+  has_many :cambio_monedas
 
   has_and_belongs_to_many :roles
   accepts_nested_attributes_for :roles
 
   has_many :plantilla_contrato_alquilers
   has_many :clientes
-
 
   validates :nombre, :abreviado, :rif, :direccion_fiscal, :telefono, presence: true
   validates :rif, uniqueness: true

@@ -180,7 +180,7 @@ class CobranzaAlquiler < ActiveRecord::Base
   end
 
   # Obtiene la gestión de cobranza que incluye: ventas, canon de alquiler, etc
-  def self.get_getion_cobranzaBORRAR(mall,year,month)
+  def self.get_gestion_cobranzaBORRAR(mall,year,month)
     cobranza = Array.new
     total_canon_fijo = total_canon_variable = total_ventas = 0
     # Obtiene las ventas del mes x tienda

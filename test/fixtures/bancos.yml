@@ -1,17 +1,5 @@
-# == Schema Information
-#
-# Table name: bancos
-#
-#  id         :integer          not null, primary key
-#  nombre     :string(255)
-#  created_at :datetime
-#  updated_at :datetime
-#
-
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
-  nombre: MyString
+  nombre: Mercantil
 
 two:
-  nombre: MyString
+  nombre: Banesco

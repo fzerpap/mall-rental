@@ -71,6 +71,7 @@ class Users::MallUsersController < ApplicationController
       params.require(:user).permit(:name, :username, :email, :password, :cellphone, :role_id, :locked)
     end
 
+
     def self.permission
       'mall_user'
     end
