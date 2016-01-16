@@ -22,8 +22,8 @@ class Mall < ActiveRecord::Base
   has_many :plantilla_contrato_alquilers
   has_many :clientes
 
-  validates :nombre, :abreviado, :rif, :direccion_fiscal, :telefono, presence: true
-  validates :rif, uniqueness: true
+  validates :nombre, :abreviado, :rif, :direccion_fiscal, :telefono, :pai_id, presence: true
+  validates :rif,:nombre,:abreviado, uniqueness: true
 
   before_destroy :confirm_presence_of_users
 

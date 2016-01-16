@@ -6,3 +6,12 @@ vela:
   direccion_fiscal: Av. Bolivar, centro comercial la vela, Porlamar
   telefono: 0295-1234567
   pai_id: 1
+
+orinokia:
+  id: 2
+  nombre: Centro Comercial Orinoquia
+  abreviado: C.C Orinoquia
+  rif: J-31665087-2
+  direccion_fiscal: Av. Caroní, centro comercial Orinoquia, Ciudad Guayana
+  telefono: 0286-1234567
+  pai_id: 1

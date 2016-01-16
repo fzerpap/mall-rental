@@ -1,0 +1,31 @@
+contratoAdidas1:
+  id: 1
+  nro_contrato: 20150101
+  fecha_inicio: 2015-01-01
+  fecha_fin: 2015-12-31
+  archivo_contrato: contrato20150101
+  canon_fijo_ml: 120000
+  canon_fijo_usd: 180
+  porc_canon_ventas: 0
+  monto_minimo_ventas: 0
+  estado_contrato: false
+  requerida_venta: true
+  tienda_id: 1
+  tipo_canon_alquiler_id: 1
+
+contratoAdidas1:
+  id: 2
+  nro_contrato: 20160101
+  fecha_inicio: 2016-01-01
+  fecha_fin: 2016-12-31
+  archivo_contrato: contrato20160101
+  canon_fijo_ml: 0
+  canon_fijo_usd: 0
+  porc_canon_ventas: 8
+  monto_minimo_ventas: 0
+  estado_contrato: true
+  requerida_venta: true
+  tienda_id: 1
+  tipo_canon_alquiler_id: 2
+
+

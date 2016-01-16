@@ -41,7 +41,15 @@ class Tienda < ActiveRecord::Base
   before_update :set_missing_attributes_update
   before_destroy :confirm_presence_of_contratos
 
-  validates :local_id, :actividad_economica_id, :arrendatario_id, presence: true
+  validates :nombre, :local_id, :actividad_economica_id, :arrendatario_id, :fecha_apertura, :fecha_fin_contrato_actual, presence: true
+  validate :confirm_presence_of_local_disponible, :on => :create
+
+  def confirm_presence_of_local_disponible
+    if self.local_id != nil
+      errors.add(:local_id, "Local no disponible") unless local.tipo_estado_local == "Disponible"
+    end
+  end
+
 
   def confirm_presence_of_contratos
     if contrato_alquilers.any?
@@ -49,17 +57,20 @@ class Tienda < ActiveRecord::Base
     end
   end
 
+
   def set_missing_attributes
-    self.update(fecha_apertura: (self.contrato_alquilers.first.fecha_inicio rescue Date.today),
-                abierta: true, fecha_fin_contrato_actual: (self.contrato_alquilers.last.fecha_fin rescue Date.today), monto_garantia_usd: (self.monto_garantia / CambioMoneda.last.cambio_ml_x_usd rescue nil))
+    self.update(fecha_apertura: (contrato_alquilers.first.fecha_inicio rescue Date.today),
+                abierta: true,
+                fecha_fin_contrato_actual: (contrato_alquilers.last.fecha_fin rescue Date.today),
+                monto_garantia_usd: (monto_garantia / CambioMoneda.last.cambio_ml_x_usd rescue 0))
   end
 
   def set_missing_attributes_update
-    self.monto_garantia_usd = self.monto_garantia / CambioMoneda.last.cambio_ml_x_usd if self.monto_garantia.present?
+    self.monto_garantia_usd = (monto_garantia / CambioMoneda.last.cambio_ml_x_usd rescue 0)
   end
 
   def vencido?
-    if self.contrato_alquilers.last.fecha_fin < Date.today
+    if contrato_alquilers.last.fecha_fin < Date.today
       return 'Si'
     else
       return 'No'
@@ -67,50 +78,12 @@ class Tienda < ActiveRecord::Base
   end
 
 
-  def self.by_nivel_mall(nivel_mall_id)
-    return where(nil) unless nivel_mall_id.present?
-    where(nivel_malls: {id: nivel_mall_id})
-  end
-
-  def self.by_actividad_economica(actividad_economica_id)
-    return where(nil) unless actividad_economica_id.present?
-    where(actividad_economicas: {id: actividad_economica_id})
-  end
-
-  def self.by_vencimiento(vencido)
-    return where(nil) unless vencido.present?
-    if vencido == 'vencidos'
-      return where("contrato_alquilers.fecha_fin < ?", Date.today)
-    elsif vencido == 'vigentes'
-      return where("contrato_alquilers.fecha_fin >= ?", Date.today)
-    else
-      where(nil)
-    end
-  end
-
-  def self.by_rango_contrato(fecha_init, fecha_end)
-
-    return where(nil) unless fecha_init.present? || fecha_end.present?
-    where("contrato_alquilers.fecha_fin >= ? AND contrato_alquilers.fecha_inicio <= ?", fecha_end, fecha_init)
-  end
-
-  def self.by_tipo_local(tipo_local_id)
-    return where(nil) unless tipo_local_id.present?
-    where(tipo_locals: {id: tipo_local_id})
-  end
-
   def self.valid_tiendas(user)
     return Tienda.joins(:local).joins(:mall).where(malls: {id: user.mall_id})
   end
 
-  def self.by_cobranza_alquilers(fecha_init, fecha_end)
-    return where(nil) unless fecha_init.present? || fecha_end.present?
-    where("cobranza_alquilers.fecha_recibo_cobro >= ? OR cobranza_alquilers.fecha_recibo_cobro <= ?", fecha_end, fecha_init)
-  end
-
-  def self.get_ids_tiendas_mall(mall)
-    mall.tiendas.pluck(:id)
-
+  def self.get_ids_tiendas_mall(mall,abierta=true)
+    mall.tiendas.where(abierta: abierta).pluck(:id)
   end
 
 
@@ -172,7 +145,46 @@ class Tienda < ActiveRecord::Base
     return ventas
   end
 
-  #TODO MOVER A UN LUGAR MAS ADECUADO
+  # Los siguientes métodos que inician con by, son llamados exclusivamente en los métodos de las estadísticas
+  # no pueden ser invocados desde la clase Tienda
+
+  def self.by_nivel_mall(nivel_mall_id)
+    return where(nil) unless nivel_mall_id.present?
+    where(nivel_malls: {id: nivel_mall_id})
+  end
+
+  def self.by_actividad_economica(actividad_economica_id)
+    return where(nil) unless actividad_economica_id.present?
+    where(actividad_economicas: {id: actividad_economica_id})
+  end
+
+  def self.by_vencimiento(vencido)
+    return where(nil) unless vencido.present?
+    if vencido == 'vencidos'
+      return where("contrato_alquilers.fecha_fin < ?", Date.today)
+    elsif vencido == 'vigentes'
+      return where("contrato_alquilers.fecha_fin >= ?", Date.today)
+    else
+      where(nil)
+    end
+  end
+
+  def self.by_rango_contrato(fecha_init, fecha_end)
+
+    return where(nil) unless fecha_init.present? || fecha_end.present?
+    where("contrato_alquilers.fecha_fin >= ? AND contrato_alquilers.fecha_inicio <= ?", fecha_end, fecha_init)
+  end
+
+  def self.by_tipo_local(tipo_local_id)
+    return where(nil) unless tipo_local_id.present?
+    where(tipo_locals: {id: tipo_local_id})
+  end
+
+  def self.by_cobranza_alquilers(fecha_init, fecha_end)
+    return where(nil) unless fecha_init.present? || fecha_end.present?
+    where("cobranza_alquilers.fecha_recibo_cobro >= ? OR cobranza_alquilers.fecha_recibo_cobro <= ?", fecha_end, fecha_init)
+  end
+
   def self.estadisticas(mall, fecha_init, fecha_end, nivel_mall_id, actividad_economica_id, tipo_local_id, criterio )
     estadisticas = Array.new
     if criterio == 'tiendas'
@@ -250,7 +262,6 @@ class Tienda < ActiveRecord::Base
     end
     return estadisticas
   end
-
 
   def self.estadisticas_mensuales(mall, year) # Este método está dando los resultados incorrectos
     estadisticas = Array.new

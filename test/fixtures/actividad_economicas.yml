@@ -1,0 +1,10 @@
+calzado:
+  id: 1
+  nombre: Calzado
+  mall_id: 1
+
+bancos:
+  id: 2
+  nombre: Bancos
+  mall_id: 2
+

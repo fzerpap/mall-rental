@@ -5,7 +5,9 @@ require 'rails/test_help'
 class ActiveSupport::TestCase
   ActiveRecord::Migration.check_pending!
 
-  include Devise::TestHelpers
+  #ActiveSupport::TestCase.fixture_path = File.expand_path("../fixtures", __FILE__)
+
+  #include Devise::TestHelpers
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   #

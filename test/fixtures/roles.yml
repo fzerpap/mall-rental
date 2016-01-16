@@ -1,1 +1,5 @@
-
+clienteMall:
+  id: 1
+  name: Administrador MallRental
+  role_type: 2
+  tipo_servicio_id: 1

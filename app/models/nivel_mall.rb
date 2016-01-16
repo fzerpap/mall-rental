@@ -15,12 +15,13 @@ class NivelMall < ActiveRecord::Base
   has_many :locals
   has_many :tiendas, through: :locals
 
+  validates :nombre, :mall_id, presence: true
   validates_uniqueness_of :nombre, scope: :mall_id, message: 'ya está en uso'
 
   before_destroy :confirm_presence_of_locales
 
   def confirm_presence_of_locales
-    if tiendas.any?
+    if locals.any?
       return false
     end
   end

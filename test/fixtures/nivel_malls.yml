@@ -1,0 +1,10 @@
+arena:
+  id: 1
+  nombre: Nivel Arena
+  mall_id: 1
+
+oro:
+  id: 2
+  nombre: Nivel Oro
+  mall_id: 2
+

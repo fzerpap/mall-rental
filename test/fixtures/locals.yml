@@ -1,0 +1,35 @@
+ar01:
+  id: 1
+  nro_local: AR-01
+  ubicacion_pasillo: 12
+  area_planta: 100
+  area_mezanina: 0
+  area_terraza: 0
+  tipo_local: 0
+  nivel_mall_id: 1
+  tipo_estado_local: 0
+  mall_id: 1
+
+ar03:
+  id: 2
+  nro_local: AR-03
+  ubicacion_pasillo: 1211
+  area_planta: 150
+  area_mezanina: 0
+  area_terraza: 0
+  tipo_local: 0
+  nivel_mall_id: 2
+  tipo_estado_local: 1
+  mall_id: 2
+
+ar04:
+  id: 3
+  nro_local: AR-04
+  ubicacion_pasillo: 1211dd
+  area_planta: 1250
+  area_mezanina: 100
+  area_terraza: 0
+  tipo_local: 0
+  nivel_mall_id: 2
+  tipo_estado_local: 0
+  mall_id: 2

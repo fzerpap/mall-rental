@@ -1,0 +1,39 @@
+adidas:
+  id: 1
+  nombre: Adidas
+  fecha_apertura: 2016-01-01
+  fecha_cierre:
+  abierta: true
+  fecha_fin_contrato_actual: 2016-12-31
+  monto_garantia: 200000
+  codigo_contable: 1.1.1.16
+  local_id: 1
+  arrendatario_id: 1
+  actividad_economica_id: 1
+
+
+tomy:
+  id: 2
+  nombre: Tomy
+  fecha_apertura: 2016-01-01
+  fecha_cierre:
+  abierta: true
+  fecha_fin_contrato_actual: 2016-12-31
+  monto_garantia: 300000
+  codigo_contable: 1.1.1.17
+  local_id: 2
+  arrendatario_id: 2
+  actividad_economica_id: 2
+
+clark:
+  id: 3
+  nombre: Clark
+  fecha_apertura: 2016-01-01
+  fecha_cierre:
+  abierta: true
+  fecha_fin_contrato_actual: 2016-12-31
+  monto_garantia: 300000
+  codigo_contable: 1.1.1.18
+  local_id: 3
+  arrendatario_id: 2
+  actividad_economica_id: 2

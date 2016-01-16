@@ -1,0 +1,11 @@
+fijo:
+  id: 1
+  tipo: Canon Fijo
+
+variable:
+  id: 2
+  tipo: Canon Variable
+
+fijoVariable:
+  id: 3
+  tipo: Canon Fijo&Variable

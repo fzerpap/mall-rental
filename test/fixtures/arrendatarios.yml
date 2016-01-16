@@ -1,0 +1,28 @@
+adidas:
+  id: 1
+  nombre: Adidas Vzla c.a
+  rif: J-3166509-2
+  direccion: Av. casa nova
+  telefono: 0274-2445677
+  nombre_rl: Antonio Suárez
+  cedula_rl: 10.345.567
+  telefono_rl: 0274-2445644
+  email_rl: asuarez@gmail.com
+  registro_mercantil: Registrado en Merida bajo el nr.....
+  mall_id: 1
+
+clark:
+  id: 2
+  nombre: Clark Vzla c.a
+  rif: J-3164509-2
+  direccion: Av. casa nova
+  telefono: 0274-2445677
+  nombre_rl: Antonio Zerpa
+  cedula_rl: 10.345.567
+  telefono_rl: 0274-2455644
+  email_rl: azerpa@gmail.com
+  registro_mercantil: Registrado en Merida bajo el nr.....
+  mall_id: 2
+
+
+
