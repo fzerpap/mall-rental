@@ -1,0 +1,17 @@
+default: &default
+  host: localhost
+  adapter: postgresql
+  username: postgres
+  password: 123456
+
+development:
+  <<: *default
+  database: mall_rental_development
+
+test:
+  <<: *default
+  database: mall_rental_test
+#
+production:
+  <<: *default
+  database: mall_rental_production

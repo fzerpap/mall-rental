@@ -56,7 +56,7 @@ group :development do
   #correo en http://127.0.0.1:1080
   gem 'mailcatcher'
 
-  gem 'sqlite3'
+  #gem 'sqlite3'
 
   gem 'annotate'
 end
@@ -75,3 +75,7 @@ gem 'coffee-script-source', '1.8.0'
 
 gem 'statsample'
 
+gem 'rails_12factor', group: :production
+gem 'puma'
+
+ruby '2.0.0'
